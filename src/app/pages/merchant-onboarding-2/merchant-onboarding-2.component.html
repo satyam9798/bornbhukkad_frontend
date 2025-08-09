@@ -1,0 +1,255 @@
+<div
+  class="py-3 fixed top-0 left-0 flex gap-3 items-center border border-solid-black w-full justify-center bg-white"
+>
+  <!-- <img src="../../../assets/bb_logo.png" alt="" class="h-16" />
+  <h1 class="text-4xl font-Heading font-bold" style="color: #ff731d">
+    Born Bhukkad
+  </h1> -->
+  <img src="../../../assets/kisansathi_logo.jpeg" alt="" class="h-12" />
+  <h1 class="text-3xl font-Heading font-bold" style="color: #ff731d">
+    KISANSATHI.TECH
+  </h1>
+</div>
+
+<div class="flex justify-center items-center">
+  <form
+    #bbSignUp="ngForm"
+    (ngSubmit)="SubmitHandler(bbSignUp.value)"
+    class="py-12 px-14 rounded-2xl flex flex-col gap-7 justify-center border border-solid-black items-center bg-white mt-[120px] pb-[50px]"
+  >
+    <div class="flex flex-col md:flex-row gap-5 w-full justify-center">
+      <div class="flex flex-col w-64 justify-between gap-1">
+        <label for="">Select start Time :</label>
+        <input
+          type="time"
+          ngModel
+          name="StartTime"
+          class="w-64 border border-solid-black py-2 px-5"
+        />
+      </div>
+
+      <div class="flex flex-col w-64 justify-between gap-1">
+        <label for="">Select End Time :</label>
+        <input
+          type="time"
+          ngModel
+          name="EndTime"
+          class="w-64 border border-solid-black py-2 px-5"
+        />
+      </div>
+    </div>
+    <div class="flex flex-col md:flex-row gap-5 w-full justify-center">
+      <div class="flex gap-5 flex-col flex-1">
+        <label for="">Select Working Days:</label>
+        <div class="flex gap-3">
+          <div class="flex gap-2">
+            <label for="">Mon</label>
+            <input ngModel type="checkbox" name="monday" />
+          </div>
+          <div class="flex gap-2">
+            <label for="">Tues</label>
+            <input ngModel type="checkbox" name="tuesday" />
+          </div>
+          <div class="flex gap-2">
+            <label for="">Wed</label>
+            <input ngModel type="checkbox" name="wednesday" />
+          </div>
+          <div class="flex gap-2">
+            <label for="">Thur</label>
+            <input ngModel type="checkbox" name="thirsday" />
+          </div>
+        </div>
+
+        <div class="flex gap-3">
+          <div class="flex gap-2">
+            <label for="">Fri</label>
+            <input ngModel type="checkbox" name="friday" />
+          </div>
+          <div class="flex gap-2">
+            <label for="">Sat</label>
+            <input ngModel type="checkbox" name="saturday" />
+          </div>
+          <div class="flex gap-2">
+            <label for="">Sun</label>
+            <input ngModel type="checkbox" name="sunday" />
+          </div>
+        </div>
+      </div>
+
+      <div class="flex gap-2 flex-col flex-1">
+        <label for="">Location:</label>
+        <div class="flex w-full gap-2">
+          <input
+            ngModel
+            [(ngModel)]="latitude"
+            type="text"
+            placeholder="lat"
+            name="lat"
+            class="w-32 border border-solid-black py-2 px-5"
+            disabled=""
+          />
+          <input
+            ngModel
+            [(ngModel)]="longitude"
+            type="text"
+            placeholder="long"
+            name="long"
+            class="w-32 border border-solid-black py-2 px-5"
+            disabled=""
+          />
+        </div>
+        <button
+          type="button"
+          class="w-28 border border-solid-black py-1 px-2 rounded-lg text-white secondary-bg-color"
+          id="locate-btn"
+          (click)="getLocation()"
+        >
+          Locate me
+        </button>
+      </div>
+    </div>
+
+    <div class="flex flex-col md:flex-row gap-5 w-full justify-center">
+      <div class="flex gap-3 flex-col flex-1">
+        <label for="">Select delivery option:</label>
+        <div class="flex flex-col gap-5">
+          <div class="flex flex-col gap-5">
+            <div class="flex gap-5">
+              <input
+                [(ngModel)]="showIntraCity"
+                type="checkbox"
+                name="IntraCity"
+              />
+              <label for="">IntraCity</label>
+            </div>
+            <ng-template [ngIf]="showIntraCity">
+              <label for="">Intracity Delivery Radius:</label>
+              <div class="flex w-full gap-4 items-center">
+                <input
+                  ngModel
+                  type="number"
+                  placeholder=""
+                  name="IntracityRadius"
+                  class="w-28 border border-solid-black py-2 px-5"
+                />
+                <span>Km</span>
+              </div>
+            </ng-template>
+          </div>
+
+          <div class="flex flex-col gap-5">
+            <div class="flex gap-5">
+              <input
+                [(ngModel)]="showPanIndia"
+                type="checkbox"
+                name="PanIndia"
+              />
+              <label for="">PanIndia</label>
+            </div>
+            <ng-template [ngIf]="showPanIndia">
+              <label for="">PanIndia Delivery Radius:</label>
+              <div class="flex w-full gap-4 items-center">
+                <input
+                  ngModel
+                  type="number"
+                  placeholder=""
+                  name="PanIndiaRadius"
+                  class="w-28 border border-solid-black py-2 px-5"
+                />
+                <span>Km</span>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex gap-2 flex-col flex-1">
+        <div>
+          <label for="">Delivery Radius:</label>
+          <div class="flex w-full gap-4 items-center">
+            <input
+              ngModel
+              type="number"
+              placeholder=""
+              name="radius"
+              class="w-28 border border-solid-black py-2 px-5"
+            />
+            <span>Km</span>
+          </div>
+        </div>
+
+        <div>
+          <label for="">Enter Minimum order value:</label>
+          <div class="flex w-full gap-4 items-center">
+            <input
+              ngModel
+              type="number"
+              placeholder=""
+              name="minimumOrderValue"
+              class="w-28 border border-solid-black py-2 px-5"
+            />
+            <span>Rs</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <label for="">Address :</label>
+    <div
+      class="flex flex-col md:flex-row gap-5 w-full justify-center items-start"
+    >
+      <div class="flex flex-col w-64 justify-between gap-1">
+        <input
+          ngModel
+          type="text"
+          placeholder="locality"
+          name="locality"
+          class="w-64 border border-solid-black py-2 px-5"
+        />
+
+        <input
+          ngModel
+          type="text"
+          placeholder="city"
+          name="city"
+          class="w-64 border border-solid-black py-2 px-5"
+        />
+        <input
+          ngModel
+          type="text"
+          placeholder="state"
+          name="state"
+          class="w-64 border border-solid-black py-2 px-5"
+        />
+      </div>
+
+      <div class="flex flex-col w-64 h-full gap-1">
+        <input
+          ngModel
+          type="text"
+          placeholder="street"
+          name="street"
+          class="w-64 border border-solid-black py-2 px-5"
+        />
+
+        <input
+          ngModel
+          type="number"
+          placeholder="area_code"
+          name="area_code"
+          class="w-64 border border-solid-black py-2 px-5"
+        />
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-7 items-center">
+      <button
+        type="submit"
+        class="w-36 border border-solid-black py-2 px-5 rounded-lg text-white secondary-bg-color"
+        id="submit-btn"
+      >
+        Submit
+      </button>
+    </div>
+  </form>
+</div>

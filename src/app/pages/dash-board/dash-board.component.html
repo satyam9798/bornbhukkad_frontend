@@ -1,0 +1,33 @@
+<app-navbar></app-navbar>
+
+<div class="flex flex-col md:flex-row flex-1">
+  <app-side-bar
+    (changeDashboardEvent)="changeDashboard($event)"
+    class="w-full md:w-1/12"
+  ></app-side-bar>
+  <div class="flex-1">
+    <ng-template [ngIf]="show == 'Menue'">
+      <app-menue></app-menue>
+    </ng-template>
+
+    <ng-template [ngIf]="show == 'Orders'">
+      <h1>Orders</h1>
+    </ng-template>
+
+    <ng-template [ngIf]="show == 'Growth'">
+      <h1>Growth</h1>
+    </ng-template>
+
+    <ng-template [ngIf]="show == 'Metrics'">
+      <h1>Metrices</h1>
+    </ng-template>
+
+    <ng-template [ngIf]="show == 'Offers'">
+      <app-offers></app-offers>
+    </ng-template>
+
+    <ng-template [ngIf]="show == 'Complaints'">
+      <h1>Complaints</h1>
+    </ng-template>
+  </div>
+</div>

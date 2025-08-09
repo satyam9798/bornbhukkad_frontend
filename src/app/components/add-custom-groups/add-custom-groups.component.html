@@ -1,0 +1,68 @@
+
+
+<form [formGroup]="variantFormGroup" class="flex flex-col gap-10">
+  <div formArrayName="variantForms" class="flex flex-col gap-5 ">
+    <div *ngFor="let variantForm of variantForms.controls; let i = index" [formGroupName]="i" >
+      <div class="flex justify-between bg-slate-100 px-5 py-2">
+        <h3>Variant {{ i + 1 }}</h3>
+        <h3 class="text-[red] cursor-pointer" (click)="removeVariantForm(i)">Remove</h3>
+      </div>
+      <div class="flex justify-between items-center px-5 py-2">
+        <div class="flex flex-col gap-2 justify-center">
+          <label for="variantName" class="flex gap-5 pb-2">
+            Variant Name
+          </label>
+
+          <mat-form-field class="w-32 h-16 ">
+            <input matInput formControlName="variantName" />
+          </mat-form-field>
+        </div>
+
+        <div class="flex flex-col gap-2">
+         <label for="itemPrice" class="pb-2">Food type</label> 
+    
+      
+          <mat-form-field class="w-32 h-16 ">
+            <mat-select formControlName="FoodType">
+              @for (food of foods; track food) {
+                <mat-option [value]="food.value">{{food.viewValue}}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+     
+        </div>
+
+        <div class="flex flex-col gap-2">
+         <label for="itemPrice" class="pb-2">Select Parent</label> 
+  
+          <mat-form-field class="w-48 h-16 ">
+            <mat-select formControlName="parentCg">
+              @for (Item of customItems; track Item) {
+                <mat-option [value]="Item.value" class="border ">{{Item.viewValue}}</mat-option>
+              }
+            </mat-select>
+            </mat-form-field>
+      
+        </div>
+     
+        <div class="flex flex-col gap-2 ">
+          <label for="additionalPrice" class="flex gap-5 pb-2">Additional Price</label>
+          <mat-form-field class="w-32 h-16 ">
+            <input matInput  formControlName="additionalPrice" type="number" />
+          </mat-form-field>
+        
+        </div>
+  
+        <!-- <div class="flex flex-col gap-2">
+          <label for="totalPrice">Total Price</label>
+          <input id="totalPrice" type="number" formControlName="totalPrice" [readonly]="true" class="border py-2 px-4 w-32" >
+        </div> -->
+      </div>
+
+    </div>
+  </div>
+  <div class="flex gap-10">
+    <button type="button" (click)="addVariantForm()" class="py-2 px-6 bg-orange-500 font-medium text-white">Add More Options</button>
+    <button type="button" (click)="onSubmit()" class="py-2 px-6 bg-orange-500 font-medium text-white">Submit</button>
+  </div>
+</form>

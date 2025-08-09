@@ -1,0 +1,182 @@
+<!-- Manage Audience Section -->
+
+<!-- <button class="btn btn-outline-primary" (click)="showAudienceModal = true">
+  See All Audiences
+</button> -->
+
+<!-- Manage Offers Section -->
+<button (click)="openCreateModal()">Create Offer</button>
+<!-- <div *ngFor="let offer of offers" (click)="offer.id && viewOffer(offer.id)">
+  <p>{{ offer.name }}</p>
+</div> -->
+<!-- <table class="offers-table">
+  <thead>
+    <tr>
+      <th>Offer Name</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let offer of offers">
+      <td>{{ offer.name }}</td>
+      <td>
+        <button (click)="viewOffer(offer.id)" title="Edit Offer">✏️</button>
+        <button (click)="confirmDelete(offer)" title="Delete Offer">🗑️</button>
+      </td>
+    </tr>
+  </tbody>
+</table> -->
+<div class="offers-container">
+  <!-- Left Column: Offers Table -->
+  <div class="offers-list">
+    <table class="offers-table">
+      <thead>
+        <tr>
+          <th>Offer Name</th>
+          <th>Actions</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let offer of offers">
+          <td>{{ offer.name }}</td>
+          <td>
+            <button (click)="viewOffer(offer.id)" title="Edit Offer">✏️</button>
+            <button (click)="confirmDelete(offer)" title="Delete Offer">
+              🗑️
+            </button>
+          </td>
+          <td>
+            <mat-slide-toggle
+              [checked]="offer.active"
+              (change)="toggleOfferStatus(offer)"
+              color="primary"
+            >
+            </mat-slide-toggle>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Right Column: Offer Image -->
+  <div class="offer-image">
+    <img src="assets/offer.jpg" alt="Offer Image" />
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div *ngIf="showDeletePopup" class="modal-backdrop">
+  <div class="modal">
+    <p>
+      Are you sure you want to delete <strong>{{ selectedOffer?.name }}</strong
+      >?
+    </p>
+    <div class="actions">
+      <button (click)="deleteOffer(selectedOffer!.id)">Delete</button>
+      <button (click)="showDeletePopup = false">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- View Offer Modal -->
+<!-- <div *ngIf="selectedOffer">
+  <h4>Offer Details: {{ selectedOffer.name }}</h4>
+  <pre>{{ selectedOffer | json }}</pre>
+</div> -->
+
+<!-- Create/Edit Offer Modal -->
+<div *ngIf="showCreateModal" class="modal-backdrop">
+  <div class="modal-box">
+    <h3>{{ editingOfferId ? "Edit Offer" : "Create Offer" }}</h3>
+
+    <!-- <label>Audience</label>
+    <select [(ngModel)]="newOffer.audienceId">
+      <option *ngFor="let a of audiences" [value]="a.id">{{ a.name }}</option>
+    </select> -->
+
+    <label>Offer Name</label>
+    <input [(ngModel)]="newOffer.name" />
+    <div class="mb-4">
+      <h4 class="font-semibold">Select Items</h4>
+      <div *ngFor="let item of items">
+        <label>
+          <input
+            type="checkbox"
+            [checked]="newOffer.item_ids.includes(item.id)"
+            (change)="toggleItem($event, item.id)"
+          />
+          {{ item.descriptor.name }}
+        </label>
+      </div>
+    </div>
+    <div class="mb-4">
+      <h4 class="font-semibold">Select Locations</h4>
+      <div *ngFor="let location of locations">
+        <label>
+          <input
+            type="checkbox"
+            [checked]="newOffer.location_ids.includes(location.id)"
+            (change)="toggleLocation($event, location.id)"
+          />
+          {{ location.address.city }} - {{ location.address.locality }}
+        </label>
+      </div>
+    </div>
+
+    <!-- Accordion for Tags -->
+    <div *ngFor="let group of groupList">
+      <h4>{{ group | titlecase }}</h4>
+      <div *ngFor="let code of tagConstants[group]">
+        <!-- <label>{{ code }}</label> -->
+        @if(code.type == 'text'){
+        <label>{{ labelMap[code.label] || code.label }}</label>
+
+        <input
+          [value]="getTagValue(group, code.label)"
+          (input)="onInputChange($event, group, code.label)"
+        />
+        } @else {
+        <label>{{ labelMap[code.label] || code.label }}</label>
+        <select
+          [value]="getTagValue(group, code.label)"
+          (change)="onInputChange($event, group, code.label)"
+        >
+          <option *ngFor="let value of code.values" [value]="value">
+            {{ value }}
+          </option>
+        </select>
+        }
+      </div>
+    </div>
+
+    <button (click)="saveOffer()">
+      {{ editingOfferId ? "Update" : "Save" }}
+    </button>
+    <button (click)="resetForm()">Cancel</button>
+  </div>
+</div>
+
+<!-- Audience Modal -->
+<div *ngIf="showAudienceModal" class="modal-backdrop">
+  <div class="modal">
+    <div class="modal-audience-header">
+      <h3 class="modal-title">All Audience Segments</h3>
+      <button class="close-btn" (click)="showAudienceModal = false">×</button>
+      <div><button>Add new Audience</button></div>
+    </div>
+
+    <mat-accordion>
+      <mat-expansion-panel *ngFor="let audience of audiences">
+        <mat-expansion-panel-header>
+          <mat-panel-title>{{ audience.name }}</mat-panel-title>
+        </mat-expansion-panel-header>
+        <!-- <pre>{{ audience.rules | json }}</pre> -->
+        <div class="rule-item" *ngFor="let key of getRuleKeys(audience.rules)">
+          <strong>{{ formatLabel(key) }}:</strong>
+          {{ formatValue(audience.rules[key]) }}
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+</div>

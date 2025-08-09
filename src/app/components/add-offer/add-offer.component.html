@@ -1,0 +1,46 @@
+<div class="bg-white p-6 rounded-xl shadow-xl w-[90vw] md:w-[35vw]">
+    <h2 class="text-xl font-bold mb-4">Add New Offer</h2>
+  
+    <form [formGroup]="offerForm" (ngSubmit)="submitForm()" class="space-y-4">
+      <div>
+        <label class="block font-medium mb-1">Offer Title</label>
+        <input
+          formControlName="title"
+          type="text"
+          class="w-full border px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-orange-500"
+        />
+      </div>
+  
+      <div>
+        <label class="block font-medium mb-1">Offer Description</label>
+        <textarea
+          formControlName="description"
+          rows="3"
+          class="w-full border px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-orange-500"
+        ></textarea>
+      </div>
+  
+      <div class="flex items-center gap-2">
+        <input type="checkbox" formControlName="active" />
+        <label>Active</label>
+      </div>
+  
+      <div class="flex justify-end gap-4 mt-4">
+        <button
+          type="button"
+          (click)="close()"
+          class="bg-slate-300 px-4 py-2 rounded"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          [disabled]="offerForm.invalid"
+          class="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600"
+        >
+          Add Offer
+        </button>
+      </div>
+    </form>
+  </div>
+  

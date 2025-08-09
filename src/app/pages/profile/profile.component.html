@@ -1,0 +1,26 @@
+<app-navbar></app-navbar>
+
+<mat-tab-group>
+  <mat-tab label="Location">
+    <div class="pt-10 px-5">
+      <button
+        class="px-10 py-2 rounded-xl secondary-bg-color text-white"
+        (click)="goToAddLocation()"
+      >
+        Add location
+      </button>
+    </div>
+  </mat-tab>
+  <mat-tab label="Profile">
+    <div class="pt-10 px-5">
+      <h1>Settings</h1>
+      <button
+        class="px-10 py-2 rounded-xl secondary-bg-color text-white"
+        (click)="logOut()"
+      >
+        Log out
+      </button>
+    </div>
+  </mat-tab>
+  <mat-tab label="Third"> Content 3 </mat-tab>
+</mat-tab-group>

@@ -1,0 +1,23 @@
+/* .inputfile {
+	width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+
+
+
+.btnLabel {
+    font-size: 1.25em;
+    font-weight: 400;
+    color: white;
+    background-color:#FF731D;
+    display: inline-block;
+    text-align: center;
+}
+
+.btnLabel:hover{
+    cursor: pointer;
+} */

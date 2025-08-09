@@ -1,0 +1,68 @@
+<form [formGroup]="variantFormGroup" class="flex flex-col gap-10">
+  <div formArrayName="variantForms" class="flex flex-col gap-5">
+    <div *ngFor="let variantForm of variantForms.controls; let i = index" [formGroupName]="i" class="border">
+      <div class="flex justify-between bg-slate-100 px-5 py-2">
+        <h3>Variant {{ i + 1 }}</h3>
+        <h3 class="text-[red] cursor-pointer" (click)="removeVariantForm(i)">Remove</h3>
+      </div>
+
+      <div class="flex justify-around py-5">
+        <!-- Select Images and Image Preview Section -->
+        <div class="flex flex-col gap-2 justify-center">
+          <p class="text-black text-lg font-medium">Select Images</p>
+          
+          <!-- Image Preview Section -->
+          <div class="flex gap-2 w-72 flex-wrap">
+            <div *ngFor="let image of imageSrcs" class="w-32 h-32 relative">
+              <img [src]="image" alt="Selected Image" class="w-full h-full object-cover" />
+              <button (click)="removeImage(image)" class="absolute top-0 right-0 text-red-500 bg-white rounded-full p-1">
+                &times;
+              </button>
+            </div>
+          </div>
+      
+          <!-- Upload Button and File Input -->
+          <div *ngIf="imageSrcs.length > 0" class="flex gap-4 mt-4">
+            <button type="button" (click)="uploadImages(i)" class="bg-green-500 text-white py-2 px-4 rounded">
+              Upload
+            </button>
+            <button type="button" (click)="cancelImages()" class="bg-red-500 text-white py-2 px-4 rounded">
+              Cancel
+            </button>
+          </div>
+      
+          <!-- File Input -->
+          <label class="container-btn-file inline-block bg-blue-500 text-white py-2 px-4 rounded cursor-pointer w-48">
+            Select Images
+            <input type="file" multiple (change)="onFilesSelected($event)" class="hidden" />
+          </label>
+        </div>
+        
+        <div class="flex flex-col justify-between items-center px-5 py-2">
+          <div class="flex flex-col gap-2">
+            <label for="quantity" class="flex gap-5 pb-2">Weight</label>
+            <mat-form-field class="w-32 h-16">
+              <input matInput formControlName="quantity" type="number" />
+            </mat-form-field>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <label for="price" class="flex gap-5 pb-2">Price</label>
+            <mat-form-field class="w-32 h-16">
+              <input matInput formControlName="price" type="number" />
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex gap-10">
+    <button type="button" (click)="addVariantForm()" class="py-2 px-6 bg-orange-500 font-medium text-white">
+      Add More Options
+    </button>
+    <button type="button" (click)="onSubmit()" class="py-2 px-6 bg-orange-500 font-medium text-white">
+      Submit
+    </button>
+  </div>
+</form>

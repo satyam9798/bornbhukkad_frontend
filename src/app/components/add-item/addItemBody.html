@@ -1,0 +1,675 @@
+<div class="shadow-md flex items-center justify-between px-10 py-2">
+  <h4 class="">Add Item1</h4>
+  <mat-dialog-actions align="end" class="flex gap-10">
+    <button
+      mat-button
+      mat-dialog-close
+      class="bg-green-700 text-white py-2 px-5"
+    >
+      Cancel
+    </button>
+  </mat-dialog-actions>
+</div>
+<mat-dialog-content class="mat-typography">
+  <div class="flex gap-10 formBox w-full h-full">
+    <form
+      [formGroup]="itemForm"
+      (ngSubmit)="onSubmit()"
+      class="flex flex-col gap-20 items-center"
+    >
+      <div class="w-full flex gap-10 justify-evenly">
+        <div class="flex flex-col gap-4">
+          <label for="" class="flex flex-col gap-4">
+            <div class="flex gap-3">
+              <p class="text-black text-lg font-medium">Item Name</p>
+              <span class="text-[red]">*</span>
+            </div>
+            <mat-form-field>
+              <mat-label>Item Name</mat-label>
+              <input matInput formControlName="itemName" />
+            </mat-form-field>
+          </label>
+
+          <label for="" class="flex flex-col gap-2">
+            <div class="flex gap-3">
+              <p class="text-black text-lg font-medium">Item Price</p>
+              <span class="text-[red]">*</span>
+            </div>
+            <div class="flex flex-col">
+              <p class="flex gap-4 text-xs">Price</p>
+              <mat-form-field>
+                <mat-label>Price of product</mat-label>
+                <input matInput formControlName="price" type="number" />
+              </mat-form-field>
+              <p class="text-xs">Excluding all taxes</p>
+            </div>
+          </label>
+
+          <label for="" class="flex flex-col gap-2">
+            <div class="flex gap-3">
+              <p class="text-black text-lg font-medium">Packaging Price</p>
+              <span class="text-[red]">*</span>
+            </div>
+            <div class="flex flex-col">
+              <p class="flex gap-4 text-xs">
+                Price
+                <span
+                  class="text-[#ff6a00] underline cursor-pointer"
+                  (click)="openPriceChart()"
+                  >See Packaging Price chart</span
+                >
+              </p>
+              <mat-form-field>
+                <mat-label>Price of product</mat-label>
+                <input
+                  matInput
+                  formControlName="PackagingPrice"
+                  type="number"
+                />
+              </mat-form-field>
+              <p class="text-xs">Packaging Price</p>
+            </div>
+          </label>
+
+          <label for="" class="flex flex-col gap-2">
+            <div class="flex gap-3">
+              <p class="text-black text-lg font-medium">Short description</p>
+              <span class="text-[red]">*</span>
+            </div>
+            <mat-form-field>
+              <mat-label>Textarea</mat-label>
+              <textarea matInput formControlName="shortDescription"></textarea>
+            </mat-form-field>
+          </label>
+
+          <div class="flex flex-col gap-2">
+            <p class="text-black text-lg font-medium">Select Images</p>
+
+            <!-- Image Preview Section -->
+            <div class="flex flex-col gap-2">
+              <div *ngFor="let image of imageSrcs" class="w-32 h-32 relative">
+                <img
+                  [src]="image"
+                  alt="Selected Image"
+                  class="w-full h-full object-cover"
+                />
+                <button
+                  (click)="removeImage(image)"
+                  class="absolute top-0 right-0 text-red-500 bg-white rounded-full p-1"
+                >
+                  &times;
+                </button>
+              </div>
+            </div>
+
+            <!-- Upload Button and File Input -->
+            <!-- Upload Button and File Input -->
+            <div *ngIf="imageSrcs.length > 0" class="flex gap-4 mt-4">
+              <button
+                type="button"
+                (click)="uploadImages()"
+                class="bg-green-500 text-white py-2 px-4 rounded"
+              >
+                Upload
+              </button>
+              <button
+                type="button"
+                (click)="cancelImages()"
+                class="bg-red-500 text-white py-2 px-4 rounded"
+              >
+                Cancel
+              </button>
+            </div>
+
+            <label
+              class="container-btn-file inline-block bg-blue-500 text-white py-2 px-4 rounded cursor-pointer"
+            >
+              Select Images
+              <input
+                type="file"
+                multiple
+                (change)="onFilesSelected($event)"
+                class="hidden"
+              />
+            </label>
+
+            <!-- Upload and Cancel Buttons -->
+          </div>
+
+          <label for="" class="flex flex-col gap-4">
+            <div class="flex gap-3">
+              <p class="text-black text-lg font-medium">
+                Select The fullfillment
+              </p>
+              <span class="text-[red]">*</span>
+            </div>
+            <select
+              id="dayOfWeek"
+              formControlName="fullfillmentId"
+              class="w-64 border-2 border-solid-black py-2 px-5"
+              required
+            >
+              <option
+                *ngFor="let fullfillment of Fullfillments; let i = index"
+                [value]="fullfillment.id"
+              >
+                {{ fullfillment.type }}
+              </option>
+            </select>
+          </label>
+
+          <div class="flex flex-col gap-1">
+            <div class="flex gap-4">
+              <div class="flex gap-3">
+                <p class="text-black text-lg font-medium">Returnable</p>
+                <span class="text-[red]">*</span>
+              </div>
+              <input
+                type="checkbox"
+                [formControl]="returnableControl"
+                class="mt-[3px] form-checkbox h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+              />
+            </div>
+            <ng-container *ngIf="returnableControl.value">
+              <label for="">Return Window:</label>
+              <div class="flex w-full gap-4 items-center">
+                <input
+                  ngModel
+                  type="number"
+                  formControlName="ReturnWindow"
+                  class="w-28 border border-solid-black py-2 px-5"
+                />
+                <span>Hours</span>
+              </div>
+            </ng-container>
+          </div>
+
+          <div class="flex flex-col gap-4">
+            <div class="flex gap-4">
+              <div class="flex gap-3">
+                <p class="text-black text-lg font-medium">Cancleable</p>
+                <span class="text-[red]">*</span>
+              </div>
+              <input
+                type="checkbox"
+                formControlName="Cancleable"
+                class="mt-[3px] form-checkbox h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <label for="" class="flex flex-col">
+            <div class="flex gap-3">
+              <p class="text-black text-lg font-medium">Food Preference</p>
+              <span class="text-[red]">*</span>
+            </div>
+            <mat-radio-group
+              aria-label="food type"
+              class="flex h-[52px]"
+              formControlName="foodPreference"
+            >
+              <mat-radio-button value="Veg">Veg</mat-radio-button>
+              <mat-radio-button value="Non veg">Non Veg</mat-radio-button>
+            </mat-radio-group>
+          </label>
+
+          <div class="flex flex-col gap-5 items-center">
+            <div class="flex gap-5">
+              <label for="" class="flex flex-col gap-5">
+                <div class="flex gap-3">
+                  <p class="text-black text-lg font-medium">Width of product</p>
+                  <span class="text-[red]">*</span>
+                </div>
+                <mat-form-field>
+                  <mat-label>Width</mat-label>
+                  <input matInput formControlName="width" type="number" />
+                </mat-form-field>
+              </label>
+
+              <label for="" class="flex flex-col gap-5">
+                <div class="flex gap-3 justify-center">
+                  <p class="text-black text-lg font-medium">unit</p>
+                  <span class="text-[red]">*</span>
+                </div>
+
+                <mat-form-field class="bg-[white] w-[150px]">
+                  <mat-select formControlName="widthUnit">
+                    @for (unit of productDimensions; track unit) {
+                    <mat-option [value]="unit">{{unit}}</mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+              </label>
+            </div>
+
+            <div class="flex gap-5">
+              <label for="" class="flex flex-col gap-5">
+                <div class="flex gap-3">
+                  <p class="text-black text-lg font-medium">
+                    Length of Product
+                  </p>
+                  <span class="text-[red]">*</span>
+                </div>
+                <mat-form-field>
+                  <mat-label>Length</mat-label>
+                  <input matInput formControlName="length" type="number" />
+                </mat-form-field>
+              </label>
+              <label for="" class="flex flex-col gap-5 w-3/12">
+                <div class="flex gap-3">
+                  <p class="text-black text-lg font-medium">Unit</p>
+                  <span class="text-[red]">*</span>
+                </div>
+                <mat-form-field class="bg-[white] w-[150px]">
+                  <mat-select formControlName="lengthUnit">
+                    @for (unit of productDimensions; track unit) {
+                    <mat-option [value]="unit">{{unit}}</mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+              </label>
+            </div>
+
+            <div class="flex gap-5">
+              <label for="" class="flex flex-col gap-5">
+                <div class="flex gap-3">
+                  <p class="text-black text-lg font-medium">
+                    Height of Product
+                  </p>
+                  <span class="text-[red]">*</span>
+                </div>
+                <mat-form-field>
+                  <mat-label>Height</mat-label>
+                  <input matInput formControlName="height" type="number" />
+                </mat-form-field>
+              </label>
+              <label for="" class="flex flex-col gap-5 w-3/12">
+                <div class="flex gap-3">
+                  <p class="text-black text-lg font-medium">Unit</p>
+                  <span class="text-[red]">*</span>
+                </div>
+
+                <mat-form-field class="bg-[white] w-[150px]">
+                  <mat-select formControlName="heightUnit">
+                    @for (unit of productDimensions; track unit) {
+                    <mat-option [value]="unit">{{unit}}</mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+              </label>
+            </div>
+          </div>
+
+          <div class="flex gap-5 items-start">
+            <label for="" class="flex flex-col gap-5">
+              <div class="flex gap-3">
+                <p class="text-black text-lg font-medium">Weight of Product</p>
+                <span class="text-[red]">*</span>
+              </div>
+
+              <mat-form-field>
+                <mat-label>Weight</mat-label>
+                <input matInput formControlName="weight" type="number" />
+              </mat-form-field>
+            </label>
+
+            <label for="" class="flex flex-col gap-5 w-3/12">
+              <div class="flex gap-3">
+                <p class="text-black text-lg font-medium">Unit</p>
+                <span class="text-[red]">*</span>
+              </div>
+              <mat-form-field class="bg-[white] w-[150px]">
+                <mat-select formControlName="weightUnit">
+                  @for (unit of productUnits; track unit) {
+                  <mat-option [value]="unit">{{unit}}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            </label>
+          </div>
+
+          <label for="" class="flex flex-col gap-4">
+            <div class="flex gap-3">
+              <p class="text-black text-lg font-medium">Long Description</p>
+              <span class="text-[red]">*</span>
+            </div>
+            <textarea
+              name=""
+              id=""
+              rows="8"
+              class="w-72 border border-solid-black py- px-5"
+              formControlName="longDescription"
+            ></textarea>
+          </label>
+
+          <div class="flex flex-col gap-4 mt-2">
+            <div class="flex gap-4">
+              <div class="flex gap-3">
+                <p class="text-black text-lg font-medium">
+                  Seller PickUp Return
+                </p>
+                <span class="text-[red]">*</span>
+              </div>
+              <input
+                type="checkbox"
+                formControlName="SellerPickUpReturn"
+                class="mt-[3px] form-checkbox h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+              />
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-4">
+            <div class="flex gap-4">
+              <div class="flex gap-3">
+                <p class="text-black text-lg font-medium">Available on COD</p>
+                <span class="text-[red]">*</span>
+              </div>
+              <input
+                type="checkbox"
+                formControlName="COD"
+                class="mt-[3px] form-checkbox h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-row gap-4">
+        <label for="" class="flex flex-col gap-4">
+          <div class="flex gap-3">
+            <p class="text-black text-lg font-medium">Customer Care Name</p>
+            <span class="text-[red]">*</span>
+          </div>
+          <mat-form-field>
+            <mat-label>Name</mat-label>
+            <input matInput formControlName="ccName" />
+          </mat-form-field>
+        </label>
+
+        <label for="" class="flex flex-col gap-4">
+          <div class="flex gap-3">
+            <p class="text-black text-lg font-medium">Customer Care Email</p>
+            <span class="text-[red]">*</span>
+          </div>
+          <mat-form-field>
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="ccEmail" />
+          </mat-form-field>
+        </label>
+
+        <label for="" class="flex flex-col gap-4">
+          <div class="flex gap-3">
+            <p class="text-black text-lg font-medium">
+              Customer Care Phone Number
+            </p>
+            <span class="text-[red]">*</span>
+          </div>
+          <mat-form-field>
+            <mat-label>Phone Number</mat-label>
+            <input matInput formControlName="ccPhone" type="number" />
+          </mat-form-field>
+        </label>
+      </div>
+
+      <mat-accordion class="w-[800px]">
+        <mat-expansion-panel>
+          <mat-expansion-panel-header class="shadow-md">
+            <mat-panel-title> Quantity </mat-panel-title>
+            <mat-panel-description>
+              quantity description
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+
+          <div class="pt-5">
+            <div class="flex gap-10 items-center">
+              <p class="font-medium text-xl text-black">
+                Title :
+                <span class="text-orange-500 font-medium text-xl"
+                  >Quantity</span
+                >
+              </p>
+              <img
+                src="../../../assets/circle-help.svg"
+                alt=""
+                class="pb-2 cursor-pointer"
+                matTooltip="Custom varients based on quantity for eg. Half, Full"
+                matTooltipPosition="after"
+              />
+            </div>
+            <p>Add variant Options</p>
+            <mat-divider class="pb-[20px]"></mat-divider>
+            <!-- Other HTML content -->
+            <app-add-custom-groups
+              (formSubmit)="handleVariantFormSubmit($event, 1)"
+              [initialVariants]="initialVariants"
+              [customItems]="customItems"
+              [currentVariants]="'Quantity'"
+            ></app-add-custom-groups>
+            <!-- Other HTML content -->
+          </div>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel>
+          <mat-expansion-panel-header class="shadow-md">
+            <mat-panel-title> Preparation type</mat-panel-title>
+            <mat-panel-description>
+              Preparation type description
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+
+          <div class="pt-5">
+            <div class="flex gap-10 items-center">
+              <p class="font-medium text-xl text-black">
+                Title :
+                <span class="text-orange-500 font-medium text-xl"
+                  >Preparation type</span
+                >
+              </p>
+              <img
+                src="../../../assets/circle-help.svg"
+                alt=""
+                class="pb-2 cursor-pointer"
+                matTooltip="Custom varients based on Preparation type for eg. Fried, Steamed"
+                matTooltipPosition="after"
+              />
+            </div>
+
+            <p>Add variant Options</p>
+            <mat-divider class="pb-[20px]"></mat-divider>
+            <!-- Other HTML content -->
+            <app-add-custom-groups
+              (formSubmit)="handleVariantFormSubmit($event, 2)"
+              [initialVariants]="initialVariants"
+              [customItems]="customItems"
+              [currentVariants]="'Preparation type'"
+            ></app-add-custom-groups>
+          </div>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel>
+          <mat-expansion-panel-header class="shadow-md">
+            <mat-panel-title> Size </mat-panel-title>
+            <mat-panel-description> Size description </mat-panel-description>
+          </mat-expansion-panel-header>
+
+          <div class="pt-5">
+            <div class="flex gap-10 items-center">
+              <p class="font-medium text-xl text-black">
+                Title :
+                <span class="text-orange-500 font-medium text-xl">Size</span>
+              </p>
+              <img
+                src="../../../assets/circle-help.svg"
+                alt=""
+                class="pb-2 cursor-pointer"
+                matTooltip="Custom varients based on Size for eg. regular, Medium ,large etc."
+                matTooltipPosition="after"
+              />
+            </div>
+
+            <p>Add variant Options</p>
+            <mat-divider class="pb-[20px]"></mat-divider>
+            <!-- Other HTML content -->
+            <app-add-custom-groups
+              (formSubmit)="handleVariantFormSubmit($event, 3)"
+              [initialVariants]="initialVariants"
+              [customItems]="customItems"
+              [currentVariants]="'Size'"
+            ></app-add-custom-groups>
+            <!-- Other HTML content -->
+          </div>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel>
+          <mat-expansion-panel-header class="shadow-md">
+            <mat-panel-title> Base </mat-panel-title>
+            <mat-panel-description> Base description </mat-panel-description>
+          </mat-expansion-panel-header>
+
+          <div class="pt-5">
+            <div class="flex gap-10 items-center">
+              <p class="font-medium text-xl text-black">
+                Title :
+                <span class="text-orange-500 font-medium text-xl"> Base</span>
+              </p>
+              <img
+                src="../../../assets/circle-help.svg"
+                alt=""
+                class="pb-2 cursor-pointer"
+                matTooltip="Custom varients based on  Base for eg. lean-crust, cheese-burst etc"
+                matTooltipPosition="after"
+              />
+            </div>
+            <p>Add variant Options</p>
+            <mat-divider class="pb-[20px]"></mat-divider>
+            <!-- Other HTML content -->
+            <app-add-custom-groups
+              (formSubmit)="handleVariantFormSubmit($event, 4)"
+              [initialVariants]="initialVariants"
+              [customItems]="customItems"
+              [currentVariants]="'Base'"
+            ></app-add-custom-groups>
+            <!-- Other HTML content -->
+          </div>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel>
+          <mat-expansion-panel-header class="shadow-md">
+            <mat-panel-title> Rice </mat-panel-title>
+            <mat-panel-description> Rice description </mat-panel-description>
+          </mat-expansion-panel-header>
+
+          <div class="pt-5">
+            <div class="flex gap-10 items-center">
+              <p class="font-medium text-xl text-black">
+                Title :
+                <span class="text-orange-500 font-medium text-xl">Rice</span>
+              </p>
+              <img
+                src="../../../assets/circle-help.svg"
+                alt=""
+                class="pb-2 cursor-pointer"
+                matTooltip="Custom varients based on quantity for eg. plain rice, jira rice, masala rice etc."
+                matTooltipPosition="after"
+              />
+            </div>
+            <p>Add variant Options</p>
+            <mat-divider class="pb-[20px]"></mat-divider>
+            <!-- Other HTML content -->
+            <app-add-custom-groups
+              (formSubmit)="handleVariantFormSubmit($event, 5)"
+              [initialVariants]="initialVariants"
+              [customItems]="customItems"
+              [currentVariants]="'Rice'"
+            ></app-add-custom-groups>
+            <!-- Other HTML content -->
+          </div>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel>
+          <mat-expansion-panel-header class="shadow-md">
+            <mat-panel-title> Make Your Own </mat-panel-title>
+            <mat-panel-description>
+              Make Your Own description
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+
+          <div class="pt-5">
+            <div class="flex gap-10 items-center">
+              <p class="font-medium text-xl text-black">
+                Title :
+                <span class="text-orange-500 font-medium text-xl"
+                  >Make Your Own</span
+                >
+              </p>
+              <img
+                src="../../../assets/circle-help.svg"
+                alt=""
+                class="pb-2 cursor-pointer"
+                matTooltip="Here you can make your own cusom varient for eg. custom toppings"
+                matTooltipPosition="after"
+              />
+            </div>
+
+            <p>Add variant Options</p>
+            <mat-divider class="pb-[20px]"></mat-divider>
+            <!-- Other HTML content -->
+            <app-add-custom-groups
+              (formSubmit)="handleVariantFormSubmit($event, 6)"
+              [initialVariants]="initialVariants"
+              [customItems]="customItems"
+              [currentVariants]="'Make Your Own'"
+            ></app-add-custom-groups>
+            <!-- Other HTML content -->
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+
+      <div class="flex flex-col gap-10 w-full px-10">
+        <div class="flex flex-col gap-1">
+          <h4 class="text-4xl font-bold text-[#ff6a00]">Item Timings</h4>
+          <span class="text-sm text-black"
+            >Please specify the timings when this Item will be available</span
+          >
+        </div>
+        <mat-radio-group
+          aria-label="Item Timings"
+          class="flex flex-col gap-2"
+          formControlName="ItemTimings"
+        >
+          <mat-radio-button value="all time"
+            >Item is available at
+            <span class="font-semibold"
+              >all times when kitchen/restaurant is open</span
+            >
+          </mat-radio-button>
+          <mat-radio-button value="specific time"
+            >Item is available at
+            <span class="font-semibold"
+              >same time for all days of the week</span
+            ></mat-radio-button
+          >
+          <mat-radio-button value="custom"
+            >Item is available at
+            <span class="font-semibold"
+              >different times during different days of the week</span
+            ></mat-radio-button
+          >
+        </mat-radio-group>
+      </div>
+
+      <button
+        mat-button
+        [mat-dialog-close]="false"
+        class="bg-orange-500 text-white py-2 px-5 mt-10"
+        type="submit"
+        (click)="onSubmitClick()"
+        [disabled]="!itemForm.valid"
+      >
+        Submit
+      </button>
+    </form>
+  </div>
+</mat-dialog-content>
