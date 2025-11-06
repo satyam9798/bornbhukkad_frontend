@@ -11,9 +11,17 @@ import { cat, kiranaCategories } from '../../utils/categories';
 @Component({
   selector: 'app-add-category',
   standalone: true,
-  imports: [MatButtonModule, MatDialogModule, MatFormFieldModule, MatSelectModule, FormsModule, ReactiveFormsModule, CommonModule],
+  imports: [
+    MatButtonModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    FormsModule,
+    ReactiveFormsModule,
+    CommonModule,
+  ],
   templateUrl: './addcategory.component.html',
-  styleUrls: ['./addcategory.component.css']
+  styleUrls: ['./addcategory.component.css'],
 })
 export class AddCategoryComponent {
   Categories = new FormControl('');
@@ -25,11 +33,14 @@ export class AddCategoryComponent {
     console.log('MerchantType in ngOnInit:', this.MerchantType);
   }
 
-  constructor(public dialog: MatDialog, private MenueServicesService: MenueServicesService) { }
+  constructor(
+    public dialog: MatDialog,
+    private MenueServicesService: MenueServicesService
+  ) {}
   openDialog() {
     const dialogRef = this.dialog.open(DialogContent);
     console.log(cat);
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         console.log(`Dialog result: ${result}`);
         if (this.MerchantType === 'kirana') {
@@ -57,23 +68,33 @@ export class AddCategoryComponent {
 @Component({
   selector: 'dialog-content',
   standalone: true,
-  imports: [MatDialogModule, MatFormFieldModule, MatSelectModule, FormsModule, ReactiveFormsModule],
+  imports: [
+    MatDialogModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    FormsModule,
+    ReactiveFormsModule,
+  ],
   template: `
     <h2 mat-dialog-title>Add category</h2>
-  <mat-dialog-content class="mat-typography">
-    <mat-form-field  class="w-[400px]">
-      <mat-label>Categories</mat-label>
-      <mat-select [formControl]="categories" multiple >
-        @for (topping of CategoryList; track topping) {
-          <mat-option [value]="topping">{{topping.descriptor.name}}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-  </mat-dialog-content>
-  <mat-dialog-actions align="end" class="w-full flex gap-10">
+    <mat-dialog-content class="mat-typography">
+      <mat-form-field class="w-[400px]">
+        <mat-label>Categories</mat-label>
+        <mat-select [formControl]="categories" multiple>
+          @for (topping of CategoryList; track topping) {
+          <mat-option [value]="topping">{{
+            topping.descriptor.name
+          }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end" class="w-full flex gap-10">
       <button mat-button mat-dialog-close>Cancel</button>
-      <button mat-button [mat-dialog-close]="categories.value" cdkFocusInitial>Submit</button>
-  </mat-dialog-actions>
+      <button mat-button [mat-dialog-close]="categories.value" cdkFocusInitial>
+        Submit
+      </button>
+    </mat-dialog-actions>
   `,
 })
 export class DialogContent {
@@ -82,110 +103,108 @@ export class DialogContent {
   MerchantType: string | null = '';
   ngOnInit() {
     this.MerchantType = localStorage.getItem('type');
-    let locationData: any = localStorage.getItem("vendorLocation");
+    let locationData: any = localStorage.getItem('vendorLocation');
     locationData = JSON.parse(locationData);
     let str = locationData?.time?.days;
     let numbers = str.split(',');
     let StartDay = numbers[0];
     let EndDay = numbers[numbers.length - 1];
     if (this.MerchantType === 'kirana') {
-      kiranaCategories.forEach((element: any) => {
+      kiranaCategories.forEach((element: any, index: any) => {
+        const seq = (index + 1).toString();
         const temp: any = {
-          "id": element.id,
-          "parentCategoryId": localStorage.getItem("vendorId"),
-          "descriptor": {
-            "name": element.name,
-            "shortDesc": element.shortDescription,
-            "longDesc": element.longDescription,
-            "images": element.images
+          id: element.id,
+          parentCategoryId: localStorage.getItem('vendorId'),
+          descriptor: {
+            name: element.name,
+            // "shortDesc": element.shortDescription, // for kirana we dont need these fields
+            // "longDesc": element.longDescription,
+            // "images": element.images
           },
-          "tags": [
+          tags: [
             {
-              "code": "type",
-              "list": [
+              code: 'type',
+              list: [
                 {
-                  "code": "type",
-                  "value": "variant_group"
-                }
-              ]
+                  code: 'type',
+                  value: 'variant_group',
+                },
+              ],
             },
             {
-              "code": "attr ",
-              "list": [
+              code: 'attr ',
+              list: [
                 {
-                  "code": "name ",
-                  "value": "item.quantity.unitized.measure "
+                  code: 'name ',
+                  value: 'item.quantity.unitized.measure ',
                 },
                 {
-                  "code": "seq",
-                  "value": "1"
-                }
-              ]
-            }
+                  code: 'seq',
+                  value: seq,
+                },
+              ],
+            },
           ],
-          "vendorId": localStorage.getItem("vendorId")
-        }
+          vendorId: localStorage.getItem('vendorId'),
+        };
         this.CategoryList.push(temp);
       });
-
     } else {
       cat.forEach((element: any) => {
         const temp: any = {
-          "id": element.id,
-          "parentCategoryId": localStorage.getItem("vendorId"),
-          "descriptor": {
-            "name": element.name,
-            "shortDesc": element.shortDescription,
-            "longDesc": element.longDescription,
-            "images": element.images
+          id: element.id,
+          parentCategoryId: localStorage.getItem('vendorId'),
+          descriptor: {
+            name: element.name,
+            shortDesc: element.shortDescription,
+            longDesc: element.longDescription,
+            images: element.images,
           },
-          "tags": [
+          tags: [
             {
-              "code": "type",
-              "list": [
+              code: 'type',
+              list: [
                 {
-                  "code": "type",
-                  "value": "custom_menu"
-                }
-              ]
+                  code: 'type',
+                  value: 'custom_menu',
+                },
+              ],
             },
             {
-              "code": "timing",
-              "list": [
+              code: 'timing',
+              list: [
                 {
-                  "code": "day_from",
-                  "value": StartDay
+                  code: 'day_from',
+                  value: StartDay,
                 },
                 {
-                  "code": "day_to",
-                  "value": EndDay,
+                  code: 'day_to',
+                  value: EndDay,
                 },
                 {
-                  "code": "time_from",
-                  "value": locationData?.time?.range?.start,
+                  code: 'time_from',
+                  value: locationData?.time?.range?.start,
                 },
                 {
-                  "code": "time_to",
-                  "value": locationData?.time?.range?.end,
-                }
-              ]
+                  code: 'time_to',
+                  value: locationData?.time?.range?.end,
+                },
+              ],
             },
             {
-              "code": "display",
-              "list": [
+              code: 'display',
+              list: [
                 {
-                  "code": "rank",
-                  "value": "3"
-                }
-              ]
-            }
+                  code: 'rank',
+                  value: '3',
+                },
+              ],
+            },
           ],
-          "vendorId": localStorage.getItem("vendorId")
-        }
+          vendorId: localStorage.getItem('vendorId'),
+        };
         this.CategoryList.push(temp);
       });
     }
   }
-
-
 }

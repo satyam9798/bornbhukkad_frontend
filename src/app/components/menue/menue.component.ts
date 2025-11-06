@@ -212,6 +212,9 @@ export class MenueComponent {
                 // "fullfillmentId": Element.fulfillment_id,
                 // "weight": Element?.quantity.unitized.measure.value,
                 // "weightUnit": Element?.quantity.unitized.measure.unit,
+                "ccName": Element.fulfillment_id,
+                "ccEmail": Element.fulfillment_id,
+                "ccPhone": Element.fulfillment_id,
               }
 
 
@@ -704,7 +707,7 @@ export class MenueComponent {
               "ondc_org_seller_pickup_return": false,
               "ondc_org_time_to_ship": constants.timeToShip,
               "ondc_org_available_on_cod": result.itemDetails.COD,
-              "ondc_org_contact_details_consumer_care": constants.customerCare,
+              "ondc_org_contact_details_consumer_care": `${result.itemDetails.ccName}, ${result.itemDetails.ccEmail}, ${result.itemDetails.ccPhone}`,
               "tags": [
                 {
                   "code": KProduct.tagsCode,
