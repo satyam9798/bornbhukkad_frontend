@@ -140,6 +140,7 @@ imageFiles: File[] = [];
     }
   }
 
+  // sending data to backend for creds addition
   onSubmitClick() {
     
     const payload = {
@@ -170,6 +171,7 @@ imageFiles: File[] = [];
         }
       ]
     };
+  
     console.log('Payload to submit:', payload);
     this.kiranaService.addCreds(payload).subscribe(
       (response) => {
