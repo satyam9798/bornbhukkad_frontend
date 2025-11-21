@@ -6,6 +6,8 @@ import { MenueComponent } from '../../components/menue/menue.component';
 import { Router } from '@angular/router';
 import { AuthServiceService } from '../../services/auth-service.service';
 import { OffersComponent } from '../../components/offers/offers.component';
+import { CredsComponent } from "../../components/creds/creds.component";
+
 
 @Component({
   selector: 'app-dash-board',
@@ -16,7 +18,8 @@ import { OffersComponent } from '../../components/offers/offers.component';
     CommonModule,
     MenueComponent,
     OffersComponent,
-  ],
+    CredsComponent
+],
   templateUrl: './dash-board.component.html',
   styleUrls: ['./dash-board.component.css'], // Also note the correction here from styleUrl to styleUrls
 })

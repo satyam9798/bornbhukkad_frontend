@@ -15,4 +15,5 @@ export class ToastService {
       horizontalPosition: 'right', // 'start', 'center', 'end', 'left', 'right'
     });
   }
+
 }

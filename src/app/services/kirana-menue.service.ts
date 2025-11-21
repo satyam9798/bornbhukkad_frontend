@@ -59,4 +59,13 @@ export class KiranaMenueService {
     };
     return this.http.get(`http://localhost:8080/merchants/kiranaProducts?vendorId=${vendorId}`, options);
   }
+
+  // add cred kirana service
+  addCreds(data:any){
+    const token = localStorage.getItem('token');
+    const headers = token ? new HttpHeaders().set('Authorization', `Bearer ${token}`) : undefined;
+    const options = headers ? { headers } : {};
+    //console.log(JSON.stringify(data));
+    return this.http.post('http://localhost:8080/merchants/kiranaCreds', data, options)
+  }
 }
