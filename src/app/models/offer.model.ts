@@ -21,7 +21,7 @@ export interface Offer {
 }
 
 export interface TagGroup {
-  code: 'qualifier' | 'benefit' | 'meta';
+  code: string;
   list: { code: string; value: string }[];
 }
 

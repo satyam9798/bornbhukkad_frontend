@@ -138,6 +138,10 @@ export class MenueComponent {
                 "Cancleable": Element.ondc_org_cancellable,
                 "COD": Element.ondc_org_available_on_cod,
                 "fullfillmentId": Element.fulfillment_id,
+                // need to map to customer care fields
+                "ccName": Element.fulfillment_id,
+                "ccEmail": Element.fulfillment_id,
+                "ccPhone": Element.fulfillment_id,
               }
 
               console.log(JSON.stringify(cg_map));
@@ -186,7 +190,7 @@ export class MenueComponent {
       })
       this.MenueServicesService.getKiranaitems().subscribe({
         next: (items) => {
-          console.log("Kirana Items ",items);
+          console.log("Kirana Items ", items);
           if (items.length > 0) {
             items[0].product.forEach((Element: any, index: number) => {
               const Item_details: object = {
@@ -208,6 +212,9 @@ export class MenueComponent {
                 // "fullfillmentId": Element.fulfillment_id,
                 // "weight": Element?.quantity.unitized.measure.value,
                 // "weightUnit": Element?.quantity.unitized.measure.unit,
+                "ccName": Element.fulfillment_id,
+                "ccEmail": Element.fulfillment_id,
+                "ccPhone": Element.fulfillment_id,
               }
 
 
@@ -700,7 +707,7 @@ export class MenueComponent {
               "ondc_org_seller_pickup_return": false,
               "ondc_org_time_to_ship": constants.timeToShip,
               "ondc_org_available_on_cod": result.itemDetails.COD,
-              "ondc_org_contact_details_consumer_care": constants.customerCare,
+              "ondc_org_contact_details_consumer_care": `${result.itemDetails.ccName}, ${result.itemDetails.ccEmail}, ${result.itemDetails.ccPhone}`,
               "tags": [
                 {
                   "code": KProduct.tagsCode,
@@ -726,17 +733,17 @@ export class MenueComponent {
             "kiranaItem": restaurantItemDto,
           }
 
-         
- 
-          result.varientItems.forEach((Vitem:any,index:number)=>{
-            let temp: any = JSON.parse(JSON.stringify(payload.kiranaProductDto[0]));
-              temp.weight.value=Vitem.quantity;
-              temp.quantity.unitized.measure.value=Vitem.quantity;
-              temp.descriptor.images=Vitem.images;
-              temp.price.value=Vitem.price
 
-              // console.log(JSON.stringify(temp));
-              payload.kiranaProductDto.push(temp);
+
+          result.varientItems.forEach((Vitem: any, index: number) => {
+            let temp: any = JSON.parse(JSON.stringify(payload.kiranaProductDto[0]));
+            temp.weight.value = Vitem.quantity;
+            temp.quantity.unitized.measure.value = Vitem.quantity;
+            temp.descriptor.images = Vitem.images;
+            temp.price.value = Vitem.price
+
+            // console.log(JSON.stringify(temp));
+            payload.kiranaProductDto.push(temp);
           })
           console.log("PayLoad:", JSON.stringify(payload));
           if (editItem) {

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { OfferService } from '../../services/offer.service';
 import { Offer, Audience, TagGroup } from '../../models/offer.model';
 import { TAG_CONSTANTS } from '../../constants/tag.constants';
-import { FormsModule } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   MatAccordion,
   MatExpansionModule,
@@ -12,6 +12,7 @@ import {
 import { AuthServiceService } from '../../services/auth-service.service';
 import { MenueServicesService } from '../../services/menue-services.service';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-offers',
@@ -19,10 +20,12 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     MatExpansionModule,
     MatAccordion,
     MatExpansionPanelHeader,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    MatTooltipModule
   ],
   templateUrl: './offers.component.html',
   styleUrls: ['./offers.component.css'],
@@ -57,15 +60,85 @@ export class OffersComponent implements OnInit {
   showDeletePopup = false;
 
   tagConstants = TAG_CONSTANTS;
+  offerForm!: FormGroup;
+
+  tooltips: { [key: string]: string } = {
+    value_type: "Whether the discount is a flat value or percentage.",
+    value: "The actual discount applied.",
+    value_cap: "The maximum discount allowed for this offer.",
+    auto: "whether offer is auto applied based on cart selection",
+    additive: "Whether offer can be applied in addition to other offers."
+  };
+
+  hours = Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0'));
+  minutes = Array.from({ length: 60 }, (_, i) => i.toString().padStart(2, '0'));
 
   constructor(
+    private fb: FormBuilder,
     private offerService: OfferService,
     private authService: AuthServiceService,
     private menuService: MenueServicesService
-  ) {}
+  ) { }
 
   ngOnInit() {
+    this.initForm();
     this.loadData();
+  }
+
+  initForm() {
+    this.offerForm = this.fb.group({
+      name: ['', Validators.required],
+      active: [true],
+      item_ids: this.fb.array([]),
+      location_ids: this.fb.array([]),
+
+      time: this.fb.group({
+        start: ['', Validators.required],
+        end: ['', Validators.required],
+      }),
+
+      tags: this.fb.group({
+        qualifier: this.fb.group({
+          min_value: [''],
+          min_items: [''],
+          first_order_only: ['No']
+        }),
+        benefit: this.fb.group({
+          value_type: ['Percent'],
+          value: [''],
+          value_cap: ['']
+        }),
+        meta: this.fb.group({
+          auto: ['No'],
+          additive: ['No']
+        })
+      })
+    });
+  }
+
+
+  getTooltip(key: string): string {
+    return this.tooltips[key] || '';
+  }
+
+
+  getTagGroup(group: string): FormGroup {
+    return this.offerForm.get('tags.' + group) as FormGroup;
+  }
+
+  getTimeGroup(): FormGroup {
+    return this.offerForm.get('time') as FormGroup;
+  }
+
+  toggleArrayValue(arrayName: 'item_ids' | 'location_ids', id: number, event: Event) {
+    const checked = (event.target as HTMLInputElement).checked;
+    const arr = this.offerForm.get(arrayName) as FormArray;
+    if (checked) {
+      arr.push(new FormControl(id));
+    } else {
+      const idx = arr.controls.findIndex(x => x.value === id);
+      arr.removeAt(idx);
+    }
   }
 
   loadData() {
@@ -77,11 +150,17 @@ export class OffersComponent implements OnInit {
       .subscribe((data) => (this.audiences = data));
     this.authService
       .getUserLocation(this.vendorId)
-      .subscribe((data: any) => (this.locations = data));
+      .subscribe((data: any) => {
+        this.locations = data;
+      });
     this.menuService
       .getRawItems(this.vendorId)
-      .subscribe((data: any) => (this.items = data));
+      .subscribe((data: any) => {
+        this.items = data;
+      });
   }
+
+
 
   getRuleKeys(rules: any): string[] {
     return Object.keys(rules || {});
@@ -150,6 +229,7 @@ export class OffersComponent implements OnInit {
   toggleOfferStatus(offer: Offer): void {
     offer.active = !offer.active;
     this.editingOfferId = offer.id || "";
+    this.populateOfferForm(offer)
     this.saveOffer();
   }
 
@@ -167,10 +247,12 @@ export class OffersComponent implements OnInit {
   }
 
   openCreateModal() {
+    this.initForm();
     this.newOffer = this.getEmptyOffer();
     this.editingOfferId = null;
     this.showCreateModal = true;
   }
+
 
   onInputChange(event: Event, group: string, code: string) {
     if (group === 'qualifier' || group === 'benefit' || group === 'meta') {
@@ -197,6 +279,29 @@ export class OffersComponent implements OnInit {
   }
 
   saveOffer() {
+
+    const formValue = this.offerForm.value;
+
+    this.newOffer = {
+      vendorId: this.vendorId,
+      active: formValue.active,
+      audienceId: '',
+      name: formValue.name,
+      descriptor: { code: '', images: [] },
+      location_ids: formValue.location_ids,
+      item_ids: formValue.item_ids,
+      time: {
+        label: 'valid',
+        range: { start: formValue.time.start, end: formValue.time.end },
+      },
+      tags: Object.keys(formValue.tags).map(group => ({
+        code: group.toString(),
+        list: Object.keys(formValue.tags[group]).map(key => ({
+          code: key,
+          value: formValue.tags[group][key]
+        }))
+      }))
+    };
     if (this.editingOfferId) {
       // Editing existing offer
       const updatedOffer = { ...this.newOffer, id: this.editingOfferId };
@@ -207,6 +312,7 @@ export class OffersComponent implements OnInit {
         });
     } else {
       // Creating new offer
+
       const offer = [this.newOffer];
       this.offerService.createOffer(offer).subscribe(() => {
         this.resetForm();
@@ -217,10 +323,45 @@ export class OffersComponent implements OnInit {
   viewOffer(id: string | undefined) {
     if (!id) return;
     this.offerService.getOfferById(id).subscribe((data) => {
-      this.newOffer = JSON.parse(JSON.stringify(data));
       this.editingOfferId = id;
+
+      this.populateOfferForm(JSON.parse(JSON.stringify(data)));
       this.showCreateModal = true;
     });
+  }
+
+  populateOfferForm(offer: Offer): void {
+    const mappedTags = this.mapTagsForForm(offer.tags);
+    this.offerForm.patchValue({
+      name: offer.name,
+      item_ids: offer.item_ids,
+      active: offer.active,
+      location_ids: offer.location_ids,
+      tags: mappedTags
+    });
+
+
+    this.setFormArrayValues('item_ids', offer.item_ids);
+    this.setFormArrayValues('location_ids', offer.location_ids);
+  }
+
+
+  setFormArrayValues(arrayName: 'item_ids' | 'location_ids', values: string[]) {
+    const arr = this.offerForm.get(arrayName) as FormArray;
+    arr.clear();
+    values.forEach(v => arr.push(new FormControl(v)));
+  }
+
+  private mapTagsForForm(tags: any[]): any {
+    const result: any = { qualifier: {}, benefit: {}, meta: {} };
+
+    tags.forEach(group => {
+      group.list.forEach((item: any) => {
+        result[group.code][item.code] = item.value;
+      });
+    });
+
+    return result;
   }
 
   confirmDelete(offer: any) {
@@ -236,6 +377,7 @@ export class OffersComponent implements OnInit {
     });
   }
   resetForm() {
+    this.offerForm.reset();
     this.showCreateModal = false;
     this.editingOfferId = null;
     this.newOffer = this.getEmptyOffer();
@@ -247,111 +389,3 @@ export class OffersComponent implements OnInit {
     return tag?.value || '';
   }
 }
-
-// import { Component, OnInit } from '@angular/core';
-// import { CommonModule } from '@angular/common';
-// import { OfferService } from '../../services/offer.service';
-// import { Offer, Audience, TagGroup } from '../../models/offer.model';
-// import { TAG_CONSTANTS } from '../../constants/tag.constants';
-// import { FormsModule } from '@angular/forms';
-
-// @Component({
-//   selector: 'app-offers',
-//   standalone: true,
-//   imports: [CommonModule, FormsModule],
-//   templateUrl: './offers.component.html',
-//   styleUrls: ['./offers.component.css'],
-// })
-// export class OffersComponent implements OnInit {
-//   vendorId: string = localStorage.getItem('vendorId') || 'P6';
-//   offers: Offer[] = [];
-//   audiences: Audience[] = [];
-//   selectedOffer: Offer | null = null;
-//   groupList: ('qualifier' | 'benefit' | 'meta')[] = [
-//     'qualifier',
-//     'benefit',
-//     'meta',
-//   ];
-
-//   showCreateModal = false;
-//   newOffer: Offer = this.getEmptyOffer();
-
-//   tagConstants = TAG_CONSTANTS;
-
-//   constructor(private offerService: OfferService) {}
-
-//   ngOnInit() {
-//     this.loadData();
-//   }
-
-//   loadData() {
-//     this.offerService
-//       .getOffers(this.vendorId)
-//       .subscribe((data) => (this.offers = data));
-//     this.offerService
-//       .getAudiences(this.vendorId)
-//       .subscribe((data) => (this.audiences = data));
-//   }
-
-//   getEmptyOffer(): Offer {
-//     return {
-//       vendorId: this.vendorId,
-//       audience_id: '',
-//       name: '',
-//       descriptor: { code: '', images: [] },
-//       location_ids: [],
-//       item_ids: [],
-//       time: {
-//         label: 'valid',
-//         range: { start: '', end: '' },
-//       },
-//       tags: [
-//         { code: 'qualifier', list: [] },
-//         { code: 'benefit', list: [] },
-//         { code: 'meta', list: [] },
-//       ],
-//     };
-//   }
-
-//   openCreateModal() {
-//     this.newOffer = this.getEmptyOffer();
-//     this.showCreateModal = true;
-//   }
-
-//   onInputChange(event: Event, group: string, code: string) {
-//     if (group === 'qualifier' || group === 'benefit' || group === 'meta') {
-//       const input = event.target as HTMLInputElement;
-//       const value = input.value;
-//       this.addTagValue(group as any, code, value); // or cast here
-//     }
-//   }
-
-//   addTagValue(
-//     group: 'qualifier' | 'benefit' | 'meta',
-//     code: string,
-//     value: string
-//   ) {
-//     const tagGroup = this.newOffer.tags.find((t) => t.code === group);
-//     if (tagGroup) {
-//       const existing = tagGroup.list.find((t) => t.code === code);
-//       if (existing) {
-//         existing.value = value;
-//       } else {
-//         tagGroup.list.push({ code, value });
-//       }
-//     }
-//   }
-
-//   saveOffer() {
-//     this.offerService.createOffer(this.newOffer).subscribe(() => {
-//       this.showCreateModal = false;
-//       this.loadData();
-//     });
-//   }
-
-//   viewOffer(id: string) {
-//     this.offerService
-//       .getOfferById(id)
-//       .subscribe((data) => (this.selectedOffer = data));
-//   }
-// }

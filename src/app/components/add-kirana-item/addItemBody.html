@@ -163,6 +163,42 @@
               />
             </div>
           </div>
+          <div class="flex flex-col gap-4">
+            <label for="" class="flex flex-col gap-4">
+              <div class="flex gap-3">
+                <p class="text-black text-lg font-medium">Customer Care Name</p>
+                <span class="text-[red]">*</span>
+              </div>
+              <mat-form-field>
+                <mat-label>Name</mat-label>
+                <input matInput formControlName="ccName" />
+              </mat-form-field>
+            </label>
+    
+            <label for="" class="flex flex-col gap-4">
+              <div class="flex gap-3">
+                <p class="text-black text-lg font-medium">Customer Care Email</p>
+                <span class="text-[red]">*</span>
+              </div>
+              <mat-form-field>
+                <mat-label>Email</mat-label>
+                <input matInput formControlName="ccEmail" />
+              </mat-form-field>
+            </label>
+    
+            <label for="" class="flex flex-col gap-4">
+              <div class="flex gap-3">
+                <p class="text-black text-lg font-medium">
+                  Customer Care Phone Number
+                </p>
+                <span class="text-[red]">*</span>
+              </div>
+              <mat-form-field>
+                <mat-label>Phone Number</mat-label>
+                <input matInput formControlName="ccPhone" type="number" />
+              </mat-form-field>
+            </label>
+          </div>
         </div>
 
         <div class="flex flex-col gap-4">

@@ -87,7 +87,7 @@
 
 <!-- Create/Edit Offer Modal -->
 <div *ngIf="showCreateModal" class="modal-backdrop">
-  <div class="modal-box">
+  <form [formGroup]="offerForm" class="modal-box" (ngSubmit)="saveOffer()">
     <h3>{{ editingOfferId ? "Edit Offer" : "Create Offer" }}</h3>
 
     <!-- <label>Audience</label>
@@ -96,65 +96,87 @@
     </select> -->
 
     <label>Offer Name</label>
-    <input [(ngModel)]="newOffer.name" />
+    <input formControlName="name" />
+
+    <!-- Items -->
     <div class="mb-4">
       <h4 class="font-semibold">Select Items</h4>
-      <div *ngFor="let item of items">
-        <label>
+      <div *ngFor="let item of items" class="flex items-center mb-2">
+        <label class="flex items-center space-x-2 cursor-pointer">
           <input
             type="checkbox"
-            [checked]="newOffer.item_ids.includes(item.id)"
-            (change)="toggleItem($event, item.id)"
+            (change)="toggleArrayValue('item_ids', item.id, $event)"
+            [checked]="offerForm.value.item_ids.includes(item.id)"
           />
-          {{ item.descriptor.name }}
+          <span>{{ item.descriptor.name }}</span>
         </label>
       </div>
     </div>
+
+    <!-- Locations -->
     <div class="mb-4">
       <h4 class="font-semibold">Select Locations</h4>
-      <div *ngFor="let location of locations">
-        <label>
+      <div *ngFor="let location of locations" class="flex items-center mb-2">
+        <label class="flex items-center space-x-2 cursor-pointer">
           <input
             type="checkbox"
-            [checked]="newOffer.location_ids.includes(location.id)"
-            (change)="toggleLocation($event, location.id)"
+            (change)="toggleArrayValue('location_ids', location.id, $event)"
+            [checked]="offerForm.value.location_ids.includes(location.id)"
           />
           {{ location.address.city }} - {{ location.address.locality }}
         </label>
       </div>
     </div>
 
-    <!-- Accordion for Tags -->
-    <div *ngFor="let group of groupList">
-      <h4>{{ group | titlecase }}</h4>
-      <div *ngFor="let code of tagConstants[group]">
-        <!-- <label>{{ code }}</label> -->
-        @if(code.type == 'text'){
-        <label>{{ labelMap[code.label] || code.label }}</label>
+    <!-- Timings  -->
+    <div class="mt-4" [formGroup]="getTimeGroup()">
+      <h3 class="font-semibold mb-2">Timings</h3>
 
-        <input
-          [value]="getTagValue(group, code.label)"
-          (input)="onInputChange($event, group, code.label)"
-        />
-        } @else {
-        <label>{{ labelMap[code.label] || code.label }}</label>
-        <select
-          [value]="getTagValue(group, code.label)"
-          (change)="onInputChange($event, group, code.label)"
-        >
-          <option *ngFor="let value of code.values" [value]="value">
-            {{ value }}
-          </option>
-        </select>
-        }
+      <div class="row">
+        <div class="col">
+          <label>From</label>
+          <input type="time" formControlName="start" />
+        </div>
+        <div class="col">
+          <label>To</label>
+          <input type="time" formControlName="end" />
+        </div>
       </div>
     </div>
 
-    <button (click)="saveOffer()">
-      {{ editingOfferId ? "Update" : "Save" }}
-    </button>
-    <button (click)="resetForm()">Cancel</button>
-  </div>
+    <!-- Tags -->
+    <div *ngFor="let group of groupList" [formGroup]="getTagGroup(group)">
+      <h4>{{ group | titlecase }}</h4>
+      <div *ngFor="let code of tagConstants[group]">
+        <div class="flex items-center">
+          <label>{{ labelMap[code.label] || code.label }}</label>
+          <img
+            *ngIf="group !== 'qualifier'"
+            src="../../../assets/circle-help.svg"
+            alt=""
+            class="w-4 h-4 cursor-pointer"
+            [matTooltip]="getTooltip(code.label)"
+            matTooltipPosition="after"
+          />
+        </div>
+
+        <!-- Text input -->
+        <input *ngIf="code.type === 'text'" [formControlName]="code.label" />
+
+        <!-- Select group -->
+        <div *ngIf="code.type === 'radio'" [formGroup]="getTagGroup(group)">
+          <select [formControlName]="code.label" class="form-select">
+            <option *ngFor="let value of code.values" [value]="value">
+              {{ value }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <button type="submit">{{ editingOfferId ? "Update" : "Save" }}</button>
+    <button type="button" (click)="resetForm()">Cancel</button>
+  </form>
 </div>
 
 <!-- Audience Modal -->

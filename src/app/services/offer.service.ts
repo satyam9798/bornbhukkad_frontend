@@ -59,10 +59,10 @@ export class OfferService {
   }
   // TODO
   updateOffer(offerId: String, offer: Offer): Observable<any> {
-    return this.http.patch(`/api/offers`, offer);
+    return this.http.patch(`http://localhost:8080/merchants/offer?offerId=${offerId}`, offer);
   }
   // TODO
   deleteOffer(offerId: String): Observable<any> {
-    return this.http.delete(`/api/offers?offerId=${offerId}`);
+    return this.http.delete(`http://localhost:8080/merchants/offer?offerId=${offerId}`);
   }
 }

@@ -39,11 +39,6 @@ export const TAG_CONSTANTS = {
       label: "additive",
       type: "radio",
       values: ["Yes", "No"]
-    },
-    {
-      label: "priority",
-      type: "radio",
-      values: ["Yes", "No"]
     }
   ],
 };
