@@ -2,11 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MenueServicesService {
+  private baseUrl = environment.apiUrl;
   constructor(private http: HttpClient, private router: Router) {}
 
   addMenus(data: any) {
@@ -17,7 +19,7 @@ export class MenueServicesService {
     const options = headers ? { headers } : {};
     console.log(JSON.stringify(data));
     return this.http.post(
-      'http://localhost:8080/merchants/restaurantProduct',
+      `${this.baseUrl}/merchants/restaurantProduct`,
       data,
       options
     );
@@ -30,7 +32,7 @@ export class MenueServicesService {
       : undefined;
     const options = headers ? { headers } : {};
     return this.http.post(
-      'http://localhost:8080/merchants/restaurantCategories',
+      `${this.baseUrl}/merchants/restaurantCategories`,
       data,
       options
     );
@@ -43,7 +45,7 @@ export class MenueServicesService {
       : undefined;
     const options = headers ? { headers } : {};
     return this.http.post(
-      'http://localhost:8080/merchants/kiranaCategories',
+      `${this.baseUrl}/merchants/kiranaCategories`,
       data,
       options
     );
@@ -56,7 +58,7 @@ export class MenueServicesService {
       : undefined;
     const options = headers ? { headers } : {};
     return this.http.put(
-      'http://localhost:8080/merchants/restaurantProduct',
+      `${this.baseUrl}/merchants/restaurantProduct`,
       data,
       options
     );
@@ -70,7 +72,7 @@ export class MenueServicesService {
       : undefined;
     const options = headers ? { headers } : {};
     return this.http.delete(
-      `http://localhost:8080/merchants/restProduct?id=${data.id}`,
+      `${this.baseUrl}/merchants/restProduct?id=${data.id}`,
       options
     );
   }
@@ -83,7 +85,7 @@ export class MenueServicesService {
       : undefined;
     const options = headers ? { headers } : {};
     return this.http.delete(
-      `http://localhost:8080/merchants/restItem?id=${data}`,
+      `${this.baseUrl}/merchants/restItem?id=${data}`,
       options
     );
     // http://localhost:8080/merchants/restItem?id=C23
@@ -100,7 +102,7 @@ export class MenueServicesService {
       headers: headers,
     };
     return this.http.get(
-      `http://localhost:8080/merchants/categories?vendorId=${vendorId}`,
+      `${this.baseUrl}/merchants/categories?vendorId=${vendorId}`,
       options
     );
   }
@@ -116,7 +118,7 @@ export class MenueServicesService {
       headers: headers,
     };
     return this.http.get(
-      `http://localhost:8080/merchants/kiranaCategories?kiranaId=${vendorId}`,
+      `${this.baseUrl}/merchants/kiranaCategories?kiranaId=${vendorId}`,
       options
     );
   }
@@ -132,7 +134,7 @@ export class MenueServicesService {
       headers: headers,
     };
     return this.http.get(
-      `http://localhost:8080/merchants/products?vendorId=${vendorId}`,
+      `${this.baseUrl}/merchants/products?vendorId=${vendorId}`,
       options
     );
   }
@@ -148,7 +150,7 @@ export class MenueServicesService {
       headers: headers,
     };
     return this.http.get(
-      `http://localhost:8080/merchants/raw-products?vendorId=${vendorId}`,
+      `${this.baseUrl}/merchants/raw-products?vendorId=${vendorId}`,
       options
     );
   }
@@ -164,7 +166,7 @@ export class MenueServicesService {
       headers: headers,
     };
     return this.http.get(
-      `http://localhost:8080/merchants/kiranaProduct?kiranaId=${vendorId}`,
+      `${this.baseUrl}/merchants/kiranaProduct?kiranaId=${vendorId}`,
       options
     );
   }
@@ -176,7 +178,7 @@ export class MenueServicesService {
       : undefined;
     const options = headers ? { headers } : {};
     return this.http.post<any>(
-      'http://localhost:8080/api/upload',
+      `${this.baseUrl}/api/upload`,
       formData,
       options
     );
@@ -184,7 +186,7 @@ export class MenueServicesService {
 
   getImage(imagePath: string): Observable<Blob> {
     return this.http.get(
-      `http://localhost:8080/api/images?path=${encodeURIComponent(imagePath)}`,
+      `${this.baseUrl}/api/images?path=${encodeURIComponent(imagePath)}`,
       {
         responseType: 'blob',
       }
