@@ -2,34 +2,35 @@ import { Injectable } from '@angular/core';
 import {HttpClient,HttpHeaders} from '@angular/common/http'
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class KiranaMenueService {
-
+private baseUrl = environment.apiUrl;
   constructor(private http:HttpClient,private router:Router) {  }
 
   addKiranaProduct(data:any){
     const token = localStorage.getItem('token');
     const headers = token ? new HttpHeaders().set('Authorization', `Bearer ${token}`) : undefined;
     const options = headers ? { headers } : {};
-    console.log(JSON.stringify(data));
-    return this.http.post('http://localhost:8080/merchants/kiranaProduct', data, options)
+    //console.log(JSON.stringify(data));
+    return this.http.post(`${this.baseUrl}/merchants/kiranaProduct`, data, options)
   }
 
   addKiranaCategories(data:any){
     const token = localStorage.getItem('token');
     const headers = token ? new HttpHeaders().set('Authorization', `Bearer ${token}`) : undefined;     
     const options = headers ? { headers } : {};    
-    return this.http.post('http://localhost:8080/merchants/kiranaCategories', data, options);
+    return this.http.post(`${this.baseUrl}/merchants/kiranaCategories`, data, options);
   }
 
   updateKiranaItems(data:any){
     const token = localStorage.getItem('token');
     const headers = token ? new HttpHeaders().set('Authorization', `Bearer ${token}`) : undefined;
     const options = headers ? { headers } : {};
-    return this.http.put('http://localhost:8080/merchants/kiranaProduct', data, options)
+    return this.http.put(`${this.baseUrl}/merchants/kiranaProduct`, data, options)
 
   }
 
@@ -37,7 +38,7 @@ export class KiranaMenueService {
     const token= localStorage.getItem('token');
     const headers= token? new HttpHeaders().set('Authorization', `Bearer ${token}`) : undefined;
     const options = headers ? { headers } : {};
-    return this.http.delete(`http://localhost:8080/merchants/kiranaProduct?id=${data.id}`,options);
+    return this.http.delete(`${this.baseUrl}/merchants/kiranaProduct?id=${data.id}`,options);
   }
 
   getKiranaCategories(): Observable<any> { // Changed to return Observable
@@ -47,7 +48,7 @@ export class KiranaMenueService {
     const options = {
       headers: headers,
     };
-    return this.http.get(`http://localhost:8080/merchants/kiranaCategories?vendorId=${vendorId}`, options);
+    return this.http.get(`${this.baseUrl}/merchants/kiranaCategories?vendorId=${vendorId}`, options);
   }
 
   getKiranaItems(): Observable<any> { // Changed to return Observable
@@ -57,7 +58,7 @@ export class KiranaMenueService {
     const options = {
       headers: headers,
     };
-    return this.http.get(`http://localhost:8080/merchants/kiranaProducts?vendorId=${vendorId}`, options);
+    return this.http.get(`${this.baseUrl}/merchants/kiranaProducts?vendorId=${vendorId}`, options);
   }
 
   // add cred kirana service
@@ -66,6 +67,6 @@ export class KiranaMenueService {
     const headers = token ? new HttpHeaders().set('Authorization', `Bearer ${token}`) : undefined;
     const options = headers ? { headers } : {};
     //console.log(JSON.stringify(data));
-    return this.http.post('http://localhost:8080/merchants/kiranaCreds', data, options)
+    return this.http.post(`${this.baseUrl}/merchants/kiranaCreds`, data, options)
   }
 }
