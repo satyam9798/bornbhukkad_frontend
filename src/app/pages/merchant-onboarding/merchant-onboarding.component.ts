@@ -27,7 +27,7 @@ export class MerchantOnboardingComponent {
     console.log('MerchantType in ngOnInit:', this.MerchantType);
   }
 
-  SubmitHandler(data: any) {
+  async SubmitHandler(data: any) {
     let payload = {
       userEmail: localStorage.getItem('userEmail'),
       descriptor: {
@@ -45,10 +45,11 @@ export class MerchantOnboardingComponent {
     }
     console.log('Payload:', payload);
     if (this.MerchantType === 'kirana') {
-      this.OnboardingService.saveKirana(payload).subscribe({
-        next: (result: any) => {
-          localStorage.setItem('vendorId', result.id);
-          localStorage.setItem('vendorData', JSON.stringify(result));
+     await this.OnboardingService.saveKirana(payload).subscribe({
+        next: async (result: any) => {
+          console.log('Kirana onboarding result:', result);
+         await localStorage.setItem('vendorId', result.id);
+         await localStorage.setItem('vendorData', JSON.stringify(result));
           this.router.navigate(['/delivery']);
         },
         error: (error) => {
