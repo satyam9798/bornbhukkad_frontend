@@ -1,6 +1,6 @@
 <app-navbar></app-navbar>
 <div class="pt-[100px] flex justify-center items-center">
-  <form
+  <!-- <form
     #bbSignUp="ngForm"
     (ngSubmit)="SubmitHandler(bbSignUp.value)"
     class="py-12 px-10 rounded-2xl flex flex-col gap-10 justify-center border border-solid-black items-center bg-white"
@@ -22,11 +22,17 @@
       />
     </div>
     <div class="flex flex-col md:flex-row gap-5 w-full justify-center">
+      
       <input
         ngModel
-        type="number"
+        type="tel"
         placeholder="phoneNumber"
         name="phone"
+        minlength="10"
+        maxlength="10"
+        pattern="[0-9]{10}"
+        #phoneCtrl="ngModel"
+        required
         class="w-64 border border-solid-black py-2 px-5"
       />
       
@@ -68,5 +74,135 @@
         Submit
       </button>
     </div>
-  </form>
+  </form> -->
+  <form
+  #bbSignUp="ngForm"
+  (ngSubmit)="SubmitHandler(bbSignUp.value)"
+  class="py-12 px-10 rounded-2xl flex flex-col gap-10 justify-center border border-solid-black items-center bg-white"
+>
+  <!-- Username + Email -->
+  <div class="flex flex-col md:flex-row gap-5 w-full justify-center">
+    <!-- Username -->
+          <input
+          ngModel
+          type="text"
+          placeholder="Username"
+          name="username"
+          #usernameCtrl="ngModel"
+          required
+          minlength="4"
+          [matTooltip]="usernameCtrl.invalid && usernameCtrl.touched ? 'Username is required (min 4 characters).' : ''"
+          matTooltipPosition="left"
+          matTooltipClass="error-tooltip"
+          [ngClass]="{ 'error-border': usernameCtrl.invalid && usernameCtrl.touched }"
+          class="w-64 border border-solid-black py-2 px-5"
+          />
+
+    <!-- Email -->
+     <input
+          ngModel
+          name="email"
+          #emailCtrl="ngModel"
+          required
+          pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$"
+          [matTooltip]="emailCtrl.invalid && emailCtrl.touched ? 'Valid email is required' : ''"
+          matTooltipPosition="right"
+          matTooltipClass="error-tooltip"
+          [ngClass]="{ 'error-border': emailCtrl.invalid && emailCtrl.touched }"
+          class="w-64 border border-solid-black py-2 px-5"
+          type="email"
+          placeholder="Enter Email"
+        />
+  </div>
+  <!-- Phone + Role -->
+  <div class="flex flex-col md:flex-row gap-5 w-full justify-center">
+    <!-- Phone -->
+ 
+        <input
+          ngModel
+          name="phone"
+          minlength="10"
+          maxlength="10"
+          pattern="[0-9]{10}"
+          #phoneCtrl="ngModel"
+          required
+          [matTooltip]="phoneCtrl.invalid && phoneCtrl.touched ? 'Phone number must be exactly 10 digits' : ''"
+          matTooltipPosition="left"
+          matTooltipClass="error-tooltip"
+          [ngClass]="{ 'error-border': phoneCtrl.invalid && phoneCtrl.touched }"
+          class="w-64 border border-solid-black py-2 px-5"
+          type="tel"
+          placeholder="Phone Number"
+        />
+    <!-- Role -->
+    <div class="flex flex-col gap-3 md:flex-row w-64 justify-between">
+      <select
+        ngModel
+        name="merchantType"
+        #roleCtrl="ngModel"
+      required
+      [matTooltip]="roleCtrl.invalid && roleCtrl.touched ? 'Role selection is required' : ''"
+      matTooltipPosition="right"
+      matTooltipClass="error-tooltip"
+      [ngClass]="{ 'error-border': roleCtrl.invalid && roleCtrl.touched }"
+      class="border border-solid-black py-2 px-5"
+      > 
+        <option value="" disabled selected>Select role</option>
+        <option value="Restaurant">Restaurant</option>
+        <option value="Kirana">Kirana</option>
+      </select>
+    </div>
+    
+  </div>
+
+  <!-- Password + Confirm Password -->
+  <div class="flex flex-col md:flex-row gap-5 w-full justify-center">
+    <!-- Password -->
+    <input
+      ngModel
+      type="password"
+      placeholder="Password"
+      name="password"
+      #passwordCtrl="ngModel"
+      required
+      minlength="6"
+      [matTooltip]="passwordCtrl.invalid && passwordCtrl.touched ? 'Password must be at least 6 characters' : ''"
+       matTooltipPosition="left"
+      matTooltipClass="error-tooltip"
+      [ngClass]="{ 'error-border': passwordCtrl.invalid && passwordCtrl.touched }"
+      class="w-64 border border-solid-black py-2 px-5"
+    />
+
+    <!-- Confirm Password -->
+    <input
+      ngModel
+      type="password"
+      placeholder="Confirm Password"
+      name="confirmPassword"
+      #confirmCtrl="ngModel"
+      required
+      [matTooltip]="(confirmCtrl.invalid && confirmCtrl.touched) || (confirmCtrl.touched && confirmCtrl.value !== passwordCtrl.value) ? 'Passwords do not match' : ''"
+      matTooltipClass="error-tooltip"
+       matTooltipPosition="right"
+      [ngClass]="{ 'error-border': (confirmCtrl.invalid && confirmCtrl.touched) || (confirmCtrl.touched && confirmCtrl.value !== passwordCtrl.value) }"
+      class="w-64 border border-solid-black py-2 px-5"
+    />
+  </div>
+
+  <!-- Submit -->
+  <div class="flex flex-col gap-7 items-center">
+    <p>
+      Already Have an account?
+      <a class="font-bold cursor-pointer primary-text-color" routerLink="/login">Login Here</a>
+    </p>
+    <button
+      class="w-36 border border-solid-black py-2 px-5 rounded-lg text-white secondary-bg-color"
+      id="submit-btn"
+      [disabled]="bbSignUp.invalid"
+    >
+      Submit
+    </button>
+  </div>
+</form>
+
 </div>

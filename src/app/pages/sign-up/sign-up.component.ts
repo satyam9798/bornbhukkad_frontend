@@ -1,17 +1,20 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { AuthServiceService } from '../../services/auth-service.service';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { ToastService } from '../../services/toast.service';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 @Component({
   selector: 'app-sign-up',
   standalone: true,
-  imports: [FormsModule, RouterLink, NavbarComponent],
+  imports: [FormsModule, RouterLink, NavbarComponent, CommonModule, MatTooltipModule],
   templateUrl: './sign-up.component.html',
   styleUrl: './sign-up.component.css',
 })
+
 export class SignUpComponent {
   constructor(
     private authServiceService: AuthServiceService,
