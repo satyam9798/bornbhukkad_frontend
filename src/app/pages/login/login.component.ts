@@ -31,12 +31,12 @@ export class LoginComponent {
       next: (res: any) => {
           console.log(res);
           localStorage.setItem("token", res.token);
-          localStorage.setItem("userEmail",res.email)
+          localStorage.setItem("userEmail",res.email);
           if(res.merchantId){
             localStorage.setItem("vendorId",res.merchantId);
           }
           localStorage.setItem('type',res.merchantType)
-          console.log("merchant Id",res.merchantId===null);
+         // console.log("merchant Id",res.merchantId===null);
           if(res.merchantId===null){
             this.router.navigate(['/merchantOnboarding']);
           }else{

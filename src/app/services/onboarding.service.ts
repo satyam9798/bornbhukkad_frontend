@@ -11,18 +11,17 @@ export class OnboardingService {
   private baseUrl = environment.apiUrl;
   constructor(private http: HttpClient, private router: Router,private toastService: ToastService) { }
  
-  handleSubmit1(data: any) {
-    const token = localStorage.getItem('token');
-    const headers = token ? new HttpHeaders().set('Authorization', `Bearer ${token}`) : undefined;
-    const options = headers ? { headers } : {};
-    return this.http.post(`${this.baseUrl}/merchants/restaurant`, data, options)
-  }
-  
   saveKirana(data: any) {
     const token = localStorage.getItem('token');
     const headers = token ? new HttpHeaders().set('Authorization', `Bearer ${token}`) : undefined;
     const options = headers ? { headers } : {};
     return this.http.post(`${this.baseUrl}/merchants/kirana`, data, options)
+  }
+   handleSubmit1(data: any) {
+    const token = localStorage.getItem('token');
+    const headers = token ? new HttpHeaders().set('Authorization', `Bearer ${token}`) : undefined;
+    const options = headers ? { headers } : {};
+    return this.http.post(`${this.baseUrl}/merchants/restaurant`, data, options)
   }
 
   saveKiranaLocation(data: any) {

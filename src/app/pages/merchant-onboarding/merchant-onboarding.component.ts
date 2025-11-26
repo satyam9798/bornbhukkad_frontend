@@ -44,14 +44,15 @@ export class MerchantOnboardingComponent {
           
     }
     console.log('Payload:', payload);
+     console.log('merchant Type:', this.MerchantType);
     if (this.MerchantType === 'kirana') {
       this.OnboardingService.saveKirana(payload).subscribe({
-        next: async (result: any) => {
+        next: (result: any) => {
           console.log('Kirana onboarding result:', result);
+           if(result.id!=null){
           localStorage.setItem('vendorId', result.id);
           localStorage.setItem('vendorData', JSON.stringify(result));
          // when the vendor id is not null navigate to delivery page
-         if(result.id!=null){
           this.router.navigate(['/delivery']);
          }
         },
