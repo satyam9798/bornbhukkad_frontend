@@ -11,12 +11,20 @@ export class OnboardingService {
   private baseUrl = environment.apiUrl;
   constructor(private http: HttpClient, private router: Router,private toastService: ToastService) { }
  
-  saveKirana(data: any) {
-    const token = localStorage.getItem('token');
-    const headers = token ? new HttpHeaders().set('Authorization', `Bearer ${token}`) : undefined;
-    const options = headers ? { headers } : {};
-    return this.http.post(`${this.baseUrl}/merchants/kirana`, data, options)
-  }
+saveKirana(data: any) {
+  const token = localStorage.getItem('token');
+
+  const headers = new HttpHeaders({
+    'Authorization': token && token !== 'null' && token !== 'undefined'
+      ? `Bearer ${token}`
+      : '',
+    'Content-Type': 'application/json'
+  });
+  console.log("onboarding service kirana called",-);
+
+  return this.http.post(`${this.baseUrl}/merchants/kirana`, data, { headers });
+}
+
    handleSubmit1(data: any) {
     const token = localStorage.getItem('token');
     const headers = token ? new HttpHeaders().set('Authorization', `Bearer ${token}`) : undefined;
