@@ -27,7 +27,7 @@ export class MerchantOnboardingComponent {
     console.log('MerchantType in ngOnInit:', this.MerchantType);
   }
 
-  async SubmitHandler(data: any) {
+   SubmitHandler(data: any) {
     let payload = {
       userEmail: localStorage.getItem('userEmail'),
       descriptor: {
@@ -44,13 +44,17 @@ export class MerchantOnboardingComponent {
           
     }
     console.log('Payload:', payload);
+     console.log('merchant Type:', this.MerchantType);
     if (this.MerchantType === 'kirana') {
-     await this.OnboardingService.saveKirana(payload).subscribe({
-        next: async (result: any) => {
+      this.OnboardingService.saveKirana(payload).subscribe({
+        next: (result: any) => {
           console.log('Kirana onboarding result:', result);
-         await localStorage.setItem('vendorId', result.id);
-         await localStorage.setItem('vendorData', JSON.stringify(result));
+           if(result.id!=null){
+          localStorage.setItem('vendorId', result.id);
+          localStorage.setItem('vendorData', JSON.stringify(result));
+         // when the vendor id is not null navigate to delivery page
           this.router.navigate(['/delivery']);
+         }
         },
         error: (error) => {
           if(error?.status===400){
@@ -65,7 +69,10 @@ export class MerchantOnboardingComponent {
         next: (result: any) => {
           localStorage.setItem('vendorId', result.id);
           localStorage.setItem('vendorData', JSON.stringify(result));
-          this.router.navigate(['/delivery']);
+           if(result.id!=null){
+            this.router.navigate(['/delivery']);
+          }
+         
         },
         error: (error) => {
           if(error?.status===400){

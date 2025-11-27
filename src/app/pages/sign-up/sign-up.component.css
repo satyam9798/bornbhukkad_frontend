@@ -1,0 +1,13 @@
+/* Tooltip styling */
+.error-tooltip {
+  background-color: #f87171; /* Tailwind red-400 */
+  color: white;
+  font-size: 0.85rem;
+  padding: 6px 10px;
+  border-radius: 4px;
+}
+
+/* Input border styling */
+.error-border {
+  border: 1px solid #ef4444; /* Tailwind red-500 */
+}
