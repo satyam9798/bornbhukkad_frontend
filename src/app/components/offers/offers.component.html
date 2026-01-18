@@ -90,17 +90,37 @@
   <form [formGroup]="offerForm" class="modal-box" (ngSubmit)="saveOffer()">
     <h3>{{ editingOfferId ? "Edit Offer" : "Create Offer" }}</h3>
 
+    <!-- Form validation error message -->
+    <div *ngIf="formSubmitted && offerForm.invalid" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+      <p class="font-bold">Please fix the following errors:</p>
+      <ul class="mt-2 list-disc list-inside text-sm">
+        <li *ngIf="offerForm.get('name')?.invalid">Offer name is required</li>
+        <li *ngIf="getTimeGroup().get('start')?.invalid">Start time is required</li>
+        <li *ngIf="getTimeGroup().get('end')?.invalid">End time is required</li>
+      </ul>
+    </div>
+
     <!-- <label>Audience</label>
     <select [(ngModel)]="newOffer.audienceId">
       <option *ngFor="let a of audiences" [value]="a.id">{{ a.name }}</option>
+      <input formControlName="name" />
     </select> -->
 
-    <label>Offer Name</label>
-    <input formControlName="name" />
+    <!-- Offer Name -->
+     <hr/>
+  <div class="mt-2">
+      <h4 class="font-semibold mb-2">Offer Name</h4>
+    <input formControlName="name" 
+      [class.border-red-500]="formSubmitted && offerForm.get('name')?.invalid" />
+    <p *ngIf="formSubmitted && offerForm.get('name')?.hasError('required')" class="text-red-500 text-sm mt-1">
+      Offer name is required
+    </p>
+    </div>
+  
 
     <!-- Items -->
     <div class="mb-4">
-      <h4 class="font-semibold">Select Items</h4>
+      <h4 class="font-semibold mb-2">Select Items</h4>
       <div *ngFor="let item of items" class="flex items-center mb-2">
         <label class="flex items-center space-x-2 cursor-pointer">
           <input
@@ -115,7 +135,7 @@
 
     <!-- Locations -->
     <div class="mb-4">
-      <h4 class="font-semibold">Select Locations</h4>
+      <h4 class="font-semibold mb-2">Select Locations</h4>
       <div *ngFor="let location of locations" class="flex items-center mb-2">
         <label class="flex items-center space-x-2 cursor-pointer">
           <input
@@ -130,51 +150,90 @@
 
     <!-- Timings  -->
     <div class="mt-4" [formGroup]="getTimeGroup()">
-      <h3 class="font-semibold mb-2">Timings</h3>
+      <h4 class="font-semibold mb-2">Timings</h4>
 
       <div class="row">
         <div class="col">
           <label>From</label>
-          <input type="time" formControlName="start" />
+          <input type="datetime-local" formControlName="start" />
         </div>
         <div class="col">
           <label>To</label>
-          <input type="time" formControlName="end" />
+          <input type="datetime-local" formControlName="end" />
         </div>
       </div>
     </div>
-
+   
     <!-- Tags -->
-    <div *ngFor="let group of groupList" [formGroup]="getTagGroup(group)">
-      <h4>{{ group | titlecase }}</h4>
-      <div *ngFor="let code of tagConstants[group]">
-        <div class="flex items-center">
-          <label>{{ labelMap[code.label] || code.label }}</label>
+     <!-- 1. Offer Type Dropdown -->
+  <div class="mt-4">
+    <h4 class="font-semibold mb-2">Offer Type</h4>
+    <select class="form-select" formControlName="offerType" (change)="onTypeChange($event)">
+      <option value="" disabled>-- Select an Offer --</option>
+      @for (option of offerOptions; track option) {
+        <option [value]="option">{{ option }}</option>
+      }
+    </select>
+  </div>
+
+  <!-- 2. Dynamic Groups (Qualifier, Benefit, etc.) -->
+  <div *ngFor="let group of groupList" [formGroup]="getTagGroup(group)" class="mt-6">
+    
+    <!-- Only show qualifier and benefit if an offer type is selected, always show meta -->
+    <ng-container *ngIf="selectedOffer">
+    <h4 class="font-semibold mb-2">{{ group | titlecase }}</h4>
+
+    <div *ngFor="let code of tagConstants[group]">
+      <!-- Show field only if it belongs to the selected Offer Type -->
+      <ng-container *ngIf="shouldShowField(group, code.label)">
+        <div class="flex items-center mt-2">
+          <label class="text-sm font-medium">
+            {{ labelMap[code.label] || code.label }}
+            <span *ngIf="getTagGroup(group).get(code.label)?.hasError('required')" class="text-red-500">*</span>
+          </label>
           <img
-            *ngIf="group !== 'qualifier'"
             src="../../../assets/circle-help.svg"
-            alt=""
-            class="w-4 h-4 cursor-pointer"
+            class="w-4 h-4 ml-2 cursor-pointer"
             [matTooltip]="getTooltip(code.label)"
             matTooltipPosition="after"
           />
         </div>
 
-        <!-- Text input -->
-        <input *ngIf="code.type === 'text'" [formControlName]="code.label" />
+        <!-- Text Input -->
+        <input 
+          *ngIf="code.type === 'text'" 
+          [formControlName]="code.label"
+          [type]="code.subtype === 'number' ? 'number' : code.subtype === 'decimal' ? 'number' : 'text'"
+          [attr.step]="code.subtype === 'decimal' ? '0.01' : '1'"
+          class="border rounded p-2 w-full mt-1"
+          [class.border-red-500]="getTagGroup(group).get(code.label)?.invalid && getTagGroup(group).get(code.label)?.touched"
+        />
+        <p *ngIf="getTagGroup(group).get(code.label)?.hasError('required') && getTagGroup(group).get(code.label)?.touched" class="text-red-500 text-sm mt-1">
+          This field is required
+        </p>
 
-        <!-- Select group -->
-        <div *ngIf="code.type === 'radio'" [formGroup]="getTagGroup(group)">
-          <select [formControlName]="code.label" class="form-select">
+        <!-- Radio/Select Selection -->
+        <div *ngIf="code.type === 'radio' && code.values" class="mt-1">
+          <select 
+            [formControlName]="code.label" 
+            class="form-select border rounded p-2 w-full"
+            [class.border-red-500]="getTagGroup(group).get(code.label)?.invalid && getTagGroup(group).get(code.label)?.touched"
+          >
             <option *ngFor="let value of code.values" [value]="value">
               {{ value }}
             </option>
           </select>
+          <p *ngIf="getTagGroup(group).get(code.label)?.hasError('required') && getTagGroup(group).get(code.label)?.touched" class="text-red-500 text-sm mt-1">
+            This field is required
+          </p>
         </div>
-      </div>
+      </ng-container>
     </div>
+    </ng-container>
+  </div>
 
-    <button type="submit">{{ editingOfferId ? "Update" : "Save" }}</button>
+    <button type="submit" [disabled]="offerForm.invalid">{{ editingOfferId ? "Update" : "Save" }}</button>
+    
     <button type="button" (click)="resetForm()">Cancel</button>
   </form>
 </div>
