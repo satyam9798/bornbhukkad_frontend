@@ -1,0 +1,47 @@
+.share-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 8px 16px;
+
+  background: linear-gradient(135deg, #ff7a18, #ff9f1c);
+  color: #ffffff;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  border: none;
+  border-radius: 6px;
+
+  cursor: pointer;
+  white-space: nowrap;
+
+  transition:
+    background 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.1s ease;
+}
+
+/* Hover */
+.share-btn:hover {
+  background: linear-gradient(135deg, #ff6a00, #ff8c00);
+  box-shadow: 0 4px 12px rgba(255, 122, 24, 0.35);
+}
+
+/* Active (click) */
+.share-btn:active {
+  transform: scale(0.97);
+}
+
+/* Focus (accessibility) */
+.share-btn:focus-visible {
+  outline: 2px solid rgba(255, 122, 24, 0.6);
+  outline-offset: 2px;
+}
+
+/* Optional: Icon styling if added later */
+.share-btn svg,
+.share-btn i {
+  font-size: 16px;
+}

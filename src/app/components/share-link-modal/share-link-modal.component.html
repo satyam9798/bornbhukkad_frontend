@@ -1,0 +1,33 @@
+<div class="modal-overlay">
+  <div class="modal">
+    <h3 class="title">Share Ordering Link</h3>
+    <p class="subtitle">
+      Share this link with your customers to let them order directly.
+    </p>
+
+    <ng-container *ngIf="link; else generateState">
+      <div class="input-wrapper">
+        <input type="text" [value]="publicUrl" readonly />
+        <button class="copy-btn" title="Copy link" (click)="copyLink()">
+          Copy
+        </button>
+      </div>
+
+      <div class="actions">
+        <button class="danger" (click)="regenerateLink()" [disabled]="loading">
+          Revoke & Generate New Link
+        </button>
+      </div>
+    </ng-container>
+
+    <ng-template #generateState>
+      <p class="empty-text">No public ordering link has been generated yet.</p>
+
+      <button class="primary" (click)="generateLink()" [disabled]="loading">
+        Generate Link
+      </button>
+    </ng-template>
+
+    <button class="close" (click)="close()">Close</button>
+  </div>
+</div>

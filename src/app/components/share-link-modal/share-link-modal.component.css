@@ -1,0 +1,101 @@
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  width: 420px;
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 24px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+}
+
+.title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: #666;
+  margin: 6px 0 18px;
+}
+
+.input-wrapper {
+  display: flex;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.input-wrapper input {
+  flex: 1;
+  border: none;
+  padding: 10px 12px;
+  font-size: 13px;
+  outline: none;
+}
+
+.copy-btn {
+  background: #ff7a18;
+  color: white;
+  border: none;
+  padding: 0 14px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.copy-btn:hover {
+  background: #ff6a00;
+}
+
+.actions {
+  margin-top: 16px;
+}
+
+.primary {
+  width: 100%;
+  background: linear-gradient(135deg, #ff7a18, #ff9f1c);
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.danger {
+  background: transparent;
+  color: #d93025;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.danger:hover {
+  text-decoration: underline;
+}
+
+.empty-text {
+  font-size: 13px;
+  color: #777;
+  margin-bottom: 16px;
+}
+
+.close {
+  margin-top: 20px;
+  width: 100%;
+  background: #f5f5f5;
+  border: none;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
