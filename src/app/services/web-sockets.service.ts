@@ -1,48 +1,64 @@
-import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
-@Injectable({
-  providedIn: 'root'
-})
-export class WebSocketsService {
+import { Injectable, NgZone } from '@angular/core';
+import { OrdersStore } from '../stores/orders.store';
+import { OrderAlertService } from './order-alert.service';
+
+@Injectable({ providedIn: 'root' })
+export class WebSocketService {
+  constructor(
+    private ordersStore: OrdersStore,
+    private alertService: OrderAlertService,
+    private zone: NgZone,
+  ) {}
+
   private socket!: WebSocket;
-  private messagesSubject: Subject<any> = new Subject<any>();
 
-  constructor() { }
+  connect(merchantId: string) {
+    console.log('🔌 Connecting to WebSocket...');
 
-  connect(url: string): void {
-    this.socket = new WebSocket(url);
+    this.socket = new WebSocket('ws://localhost:8080/chat');
 
     this.socket.onopen = () => {
-      console.log('Connected to WebSocket');
+      console.log('✅ WebSocket connected');
+
+      const payload = {
+        merchantId,
+        type: 'REGISTER',
+      };
+
+      console.log('➡️ Sending register payload:', payload);
+      this.socket.send(JSON.stringify(payload));
     };
 
+    // this.socket.onmessage = (event) => {
+    //   console.log('📩 WebSocket message received:', event.data);
+    //   this.handleEvent(event.data);
+    // };
     this.socket.onmessage = (event) => {
-      const message = JSON.parse(event.data);
-      this.messagesSubject.next(message);
+      this.zone.run(() => {
+        this.handleEvent(event.data);
+      });
     };
 
     this.socket.onerror = (error) => {
-      console.error('WebSocket error:', error);
+      console.error('❌ WebSocket error:', error);
     };
 
     this.socket.onclose = () => {
-      console.log('WebSocket connection closed');
+      console.warn('🔌 WebSocket closed');
     };
   }
-
-  sendMessage(message: any): void {
-    if (this.socket.readyState === WebSocket.OPEN) {
-      this.socket.send(JSON.stringify(message));
+  handleEvent(data: any) {
+    const parsedData = JSON.parse(data);
+    if (parsedData.event === 'NEW_ORDER') {
+      this.playSound();
+      this.ordersStore.addNewOrder(parsedData.order);
+      this.alertService.show(parsedData.order);
     }
   }
 
-  getMessages(): Observable<any> {
-    return this.messagesSubject.asObservable();
-  }
-
-  close(): void {
-    if (this.socket) {
-      this.socket.close();
-    }
+  playSound() {
+    const audio = new Audio('assets/sounds/notif-2.mp3');
+    audio.load();
+    audio.play().catch((err) => console.error('Audio error:', err));
   }
 }
