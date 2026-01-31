@@ -1,0 +1,30 @@
+<div class="order-card">
+  <div class="header">
+    <strong>Order #{{ order.id }}</strong>
+
+    <span *ngIf="order.status === 'NEW'" class="timer" [class.red]="isCritical">
+      {{ remainingSeconds }}s
+    </span>
+
+    <span *ngIf="order.status !== 'NEW'" class="status">
+      {{ order.status }}
+    </span>
+  </div>
+
+  <div class="items">
+    <div *ngFor="let item of order.items">
+      {{ item.name }} × {{ item.quantity }}
+    </div>
+  </div>
+
+  <div class="footer">
+    <span class="amount">₹{{ order.totalAmount }}</span>
+
+    <span class="payment">{{ order.paymentMode }}</span>
+  </div>
+
+  <div class="actions" *ngIf="order.status === 'NEW'">
+    <button class="accept" (click)="accept()">Accept</button>
+    <button class="reject" (click)="reject()">Reject</button>
+  </div>
+</div>
