@@ -6,8 +6,9 @@ import { MenueComponent } from '../../components/menue/menue.component';
 import { Router } from '@angular/router';
 import { AuthServiceService } from '../../services/auth-service.service';
 import { OffersComponent } from '../../components/offers/offers.component';
-import { CredsComponent } from "../../components/creds/creds.component";
-
+import { CredsComponent } from '../../components/creds/creds.component';
+import { WebSocketService } from '../../services/web-sockets.service';
+import { OrdersComponent } from '../../components/orders/orders.component';
 
 @Component({
   selector: 'app-dash-board',
@@ -18,8 +19,9 @@ import { CredsComponent } from "../../components/creds/creds.component";
     CommonModule,
     MenueComponent,
     OffersComponent,
-    CredsComponent
-],
+    CredsComponent,
+    OrdersComponent,
+  ],
   templateUrl: './dash-board.component.html',
   styleUrls: ['./dash-board.component.css'], // Also note the correction here from styleUrl to styleUrls
 })
@@ -29,7 +31,8 @@ export class DashBoardComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private authServiceService: AuthServiceService
+    private authServiceService: AuthServiceService,
+    private ws: WebSocketService,
   ) {}
 
   changeDashboard(dashboardName: string) {
@@ -98,6 +101,10 @@ export class DashBoardComponent implements OnInit {
           console.error('Error:', error);
         },
       });
+    }
+    const merchantId = localStorage.getItem('vendorId');
+    if (merchantId) {
+      this.ws.connect(merchantId);
     }
   }
 }

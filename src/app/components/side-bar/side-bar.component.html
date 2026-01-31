@@ -23,10 +23,13 @@
   <div class="flex justify-center items-center flex-1">
     <div
       class="flex flex-col gap-2 border border-solid border-orange-500 justify-center items-center h-24 w-24 cursor-pointer"
-      (click)="emitEvent('Growth')"
+      (click)="emitEvent('Orders')"
     >
-      <img src="../../../assets/indian-rupee (1).svg" alt="" />
-      <p class="text-white">Growth</p>
+      <span *ngIf="newOrderCount$ | async as count" class="badge">
+        {{ count }}
+      </span>
+      <img src="../../../assets/orders.png" alt="" />
+      <p class="text-white">Orders</p>
     </div>
   </div>
   <div class="flex justify-center items-center flex-1">
