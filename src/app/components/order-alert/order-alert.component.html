@@ -1,0 +1,9 @@
+<div class="alert" *ngIf="order">
+  <div class="content">
+    <strong>🔔 Alert</strong>
+    <p>You have received a new order</p>
+    <small>{{ itemNames }}</small>
+  </div>
+
+  <button class="close" (click)="close()">✕</button>
+</div>
