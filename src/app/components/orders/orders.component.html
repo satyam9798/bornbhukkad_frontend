@@ -1,0 +1,11 @@
+<div class="order-comp">
+  <h3>New Orders</h3>
+  <div *ngFor="let order of newOrders">
+    <app-order-card [order]="order"></app-order-card>
+  </div>
+
+  <h3>Other Orders</h3>
+  <div *ngFor="let order of oldOrders">
+    <app-order-card [order]="order"></app-order-card>
+  </div>
+</div>
